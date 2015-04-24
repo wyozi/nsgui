@@ -22,4 +22,14 @@ function SKIN:PaintFrame(panel, w, h)
 	self:PaintFrameHeader(panel, w, h)
 end
 
+function SKIN:PaintButton(panel, w, h)
+	surface.SetDrawColor(255, 0, 0)
+	surface.DrawRect(0, 0, w, h)
+
+	surface.SetDrawColor(0, 0, 0)
+	surface.DrawOutlinedRect(0, 0, w, h)
+
+	draw.SimpleText(panel:GetText(), "DermaDefaultBold", w/2, h/2, Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+end
+
 nsgui.skin.Register("sleek", SKIN)
