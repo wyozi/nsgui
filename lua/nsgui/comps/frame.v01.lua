@@ -20,6 +20,9 @@ function PANEL:PerformLayout()
 	local w, h = self:GetSize()
 	self.CloseButton:SetPos(w - 53, 3)
 	self.CloseButton:SetSize(50, 20)
+
+	-- TODO make overriding this possible in a skin
+	self:SetDragBounds(0, 0, w, 25)
 end
 
 nsgui.skin.HookPaint(PANEL, "PaintFrame")
