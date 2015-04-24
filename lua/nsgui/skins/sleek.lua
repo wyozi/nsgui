@@ -1,4 +1,4 @@
-local SKIN = nsgui.skin.Create("sleek")
+local SKIN = {}
 
 function SKIN:DrawLabel(x, y, w, h)
 
@@ -21,3 +21,5 @@ function SKIN:PaintFrame(panel, w, h)
 	self:PaintFrameBackground(panel, w, h)
 	self:PaintFrameHeader(panel, w, h)
 end
+
+nsgui.skin.Register("sleek", SKIN)

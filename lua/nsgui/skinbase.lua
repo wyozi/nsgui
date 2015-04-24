@@ -1,11 +1,9 @@
 nsgui.skin = nsgui.skin or {}
 nsgui.skin.Skins = nsgui.skin.Skins or {}
 
-function nsgui.skin.Create(id)
-	local t = {}
-	t.Id = id
-	nsgui.skin.Skins[id] = t
-	return t
+function nsgui.skin.Register(id, tbl)
+	nsgui.skin.Skins[id] = tbl
+	return tbl
 end
 
 function nsgui.skin.HookPaint(metapanel, funcname)
