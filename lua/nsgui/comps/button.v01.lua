@@ -7,7 +7,8 @@ function PANEL:Init()
 end
 
 function PANEL:OnMousePressed(mousecode)
-	print("PRESSED")
+	-- TODO think this through
+	if self.DoClick then self:DoClick() end 
 end
 nsgui.skin.HookPaint(PANEL, "PaintButton")
 
