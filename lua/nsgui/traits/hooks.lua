@@ -2,6 +2,11 @@ local TRAIT = {}
 
 TRAIT.Default = true
 
+-- TODO is this actually a good idea?
+function TRAIT:Think()
+	self:CallHook("Think")
+end
+
 function TRAIT:AddHook(name, id, fn)
 	self._hooks = self._hooks or {}
 	self._hooks[name] = self._hooks[name] or {}
