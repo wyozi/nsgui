@@ -12,13 +12,11 @@ function nsgui.skin.Register(id, tbl)
 	return tbl
 end
 
-function nsgui.skin.HookPaint(metapanel, funcname, ...)
-	local args = {...}
-
+function nsgui.skin.HookPaint(metapanel, funcname)
 	metapanel.Paint = function(panel, w, h)
 		local skin = panel:GetSkin() or "sleek"
 		local skinobj = nsgui.skin.Skins[skin] or nsgui.skin.Skins.sleek
 
-		skinobj[funcname](skinobj, panel, w, h, unpack ( args ) )
+		skinobj[funcname](skinobj, panel, w, h )
 	end
 end
