@@ -34,14 +34,18 @@ function SKIN:PaintFrame(panel, w, h)
 	self:PaintFrameHeader(panel, w, h)
 end
 
+SKIN.Color_ButtonBackground = Color(255, 255, 255)
+SKIN.Color_ButtonOutline = Color(0, 0, 0, 100)
+SKIN.Color_ButtonForeground = Color(51, 51, 51)
+
 function SKIN:PaintButton(panel, w, h)
-	surface.SetDrawColor(panel:GetColor())
+	surface.SetDrawColor(panel:GetColor() or self.Color_ButtonBackground)
 	surface.DrawRect(0, 0, w, h)
 
-	surface.SetDrawColor(0, 0, 0, 100)
+	surface.SetDrawColor(self.Color_ButtonOutline)
 	surface.DrawOutlinedRect(0, 0, w, h)
 
-	draw.SimpleText(panel:GetText(), panel:GetFont(), w/2, h/2, panel:GetTextColor(), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+	draw.SimpleText(panel:GetText(), panel:GetFont() or self.Font, w/2, h/2, panel:GetTextColor() or self.Color_ButtonForeground, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 end
 
 nsgui.skin.Register("sleek", SKIN)
