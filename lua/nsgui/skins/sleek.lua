@@ -7,20 +7,25 @@ surface.CreateFont("Roboto 16", {
 SKIN.FrameHeaderFont = "Roboto 16"
 SKIN.Font = "Roboto 16"
 
+SKIN.Color_FrameBackground = Color(255, 255, 255)
+SKIN.Color_FrameOutline = Color(0, 0, 0, 100)
+SKIN.Color_FrameHeaderBackground = Color(32, 32, 32)
+SKIN.Color_FrameHeaderForeground = Color(255, 255, 255)
+
 function SKIN:PaintFrameBackground(panel, w, h)
-	surface.SetDrawColor(255, 255, 255)
+	surface.SetDrawColor(self.Color_FrameBackground)
 	surface.DrawRect(0, 0, w, h)
 end
 function SKIN:PaintFrameOutline(panel, w, h)
-	surface.SetDrawColor(0, 0, 0, 100)
+	surface.SetDrawColor(self.Color_FrameOutline)
 	surface.DrawOutlinedRect(0, 0, w, h)
 end
 
 function SKIN:PaintFrameHeader(panel, w, h)
-	surface.SetDrawColor(32, 32, 32)
+	surface.SetDrawColor(self.Color_FrameHeaderBackground)
 	surface.DrawRect(0, 0, w, 25)
 
-	draw.SimpleText(panel:GetTitle(), self.FrameHeaderFont, 5, 25/2, Color(255, 255, 255), nil, TEXT_ALIGN_CENTER)
+	draw.SimpleText(panel:GetTitle(), self.FrameHeaderFont, 5, 25/2, self.Color_FrameHeaderForeground, nil, TEXT_ALIGN_CENTER)
 end
 
 function SKIN:PaintFrame(panel, w, h)

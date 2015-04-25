@@ -20,7 +20,7 @@ end
 function SKIN:PaintFrameBackground(panel, w, h)
 	self:DrawBlur(panel, 3, 6)
 
-	surface.SetDrawColor(0, 0, 0, 100)
+	surface.SetDrawColor(self.Color_FrameOutline)
 	surface.DrawRect(0, 0, w, h)
 end
 
