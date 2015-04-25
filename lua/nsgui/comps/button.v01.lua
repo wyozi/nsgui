@@ -14,11 +14,7 @@ function PANEL:Init()
 	self:SetFont("Roboto 16")
 end
 
-function PANEL:OnMousePressed(mousecode)
-	-- TODO think this through
-	if self.DoClick then self:DoClick() end 
-end
-
+nsgui.trait.Import(PANEL, "mouseinput")
 nsgui.skin.HookPaint(PANEL, "PaintButton")
 
 nsgui.Register("NSButton", PANEL, "Panel")
