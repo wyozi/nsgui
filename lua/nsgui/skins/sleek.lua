@@ -5,30 +5,12 @@ surface.CreateFont("Roboto 16", {
 	font = "Roboto",
 })
 
-local blur = Material("pp/blurscreen")
-
-function SKIN:DrawBlur(p, amount, heavyness)
-	local x, y = p:GetRelativePos(0, 0)
-	local scrW, scrH = ScrW(), ScrH()
-
-	surface.SetDrawColor(255,255,255)
-	surface.SetMaterial(blur)
-
-	for i = 1, heavyness do
-		blur:SetFloat("$blur", (i / 3) * (amount or 6))
-		blur:Recompute()
-
-		render.UpdateScreenEffectTexture()
-		surface.DrawTexturedRect(x * -1, y * -1, scrW, scrH)
-	end
-end
-
 function SKIN:PaintFrameBackground(panel, w, h)
-	self:DrawBlur(panel, 3, 6)
-
-	surface.SetDrawColor(0, 0, 0, 100)
+	surface.SetDrawColor(255, 255, 255)
 	surface.DrawRect(0, 0, w, h)
-
+end
+function SKIN:PaintFrameOutline(panel, w, h)
+	surface.SetDrawColor(0, 0, 0, 100)
 	surface.DrawOutlinedRect(0, 0, w, h)
 end
 
@@ -41,6 +23,7 @@ end
 
 function SKIN:PaintFrame(panel, w, h)
 	self:PaintFrameBackground(panel, w, h)
+	self:PaintFrameOutline(panel, w, h)
 	self:PaintFrameHeader(panel, w, h)
 end
 

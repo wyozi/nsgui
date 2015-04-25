@@ -2,6 +2,14 @@ nsgui.skin = nsgui.skin or {}
 nsgui.skin.Skins = nsgui.skin.Skins or {}
 
 function nsgui.skin.Register(id, tbl, parent)
+	if parent then
+		local parentobj = nsgui.skin.Skins[parent]
+		if not parentobj then
+			error("Trying to register skin '" .. id .. "' with invalid parent skin '" .. parent .. "'")
+		end
+
+		setmetatable(tbl, {__index = parentobj})
+	end
 	nsgui.skin.Skins[id] = tbl
 	return tbl
 end
