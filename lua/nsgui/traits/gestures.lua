@@ -16,10 +16,8 @@ function TRAIT:GestureThink()
 		local x, y = self:GetParent():ScreenToLocal(gui.MousePos())
 
 		if y < 10 and not self._NormalBounds then
-			local x, y = self:GetPos()
-
 			self._NormalBounds = {
-				pos = {x, 0},
+				pos = {self.x, 0},
 				size = {self:GetSize()}
 			}
 			
