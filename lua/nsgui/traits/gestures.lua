@@ -37,6 +37,7 @@ function TRAIT:GestureThink()
 			self._NormalBounds = nil
 
 			self._OverrideDragPos = false
+			self:ResetDragPosition()
 		end
 	end
 end

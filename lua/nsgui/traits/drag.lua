@@ -29,8 +29,8 @@ function TRAIT:DragThink()
 	local mousey = math.Clamp(gui.MouseY(), 1, ScrH()-1)
 
 	if self.Dragging and not self._OverrideDragPos then
-		local x = mousex - self.Dragging[1]
-		local y = mousey - self.Dragging[2]
+		local x = mousex + self.Dragging[1]
+		local y = mousey + self.Dragging[2]
 
 		self:SetPos(x, y)
 	end
@@ -48,9 +48,13 @@ function TRAIT:DragThink()
 
 end
 
+function TRAIT:ResetDragPosition()
+	self.Dragging = { self.x - gui.MouseX(), self.y - gui.MouseY() }
+end
+
 function TRAIT:OnMousePressed()
 	if(self:GetDraggable() && self:IsInBounds(gui.MouseX(), gui.MouseY())) then
-		self.Dragging = { gui.MouseX() - self.x, gui.MouseY() - self.y }
+		self:ResetDragPosition()
 		self:MouseCapture(true)
 
 		self:CallHook("DraggingStarted")
