@@ -2,6 +2,7 @@ local TRAIT = {}
 
 AccessorFunc(TRAIT, "_draggable", "Draggable", FORCE_BOOL )
 
+
 function TRAIT:Init ( )
 	self:SetDragBounds ( 0, 0, self:GetWide ( ), self:GetTall ( ) )
 end
@@ -26,7 +27,7 @@ end
 		local mousex = math.Clamp( gui.MouseX(), 1, ScrW()-1 )
 		local mousey = math.Clamp( gui.MouseY(), 1, ScrH()-1 )
 
-		if ( self.Dragging ) then
+		if ( self.Dragging and ( not self.Abort ) ) then
 
 			local x = mousex - self.Dragging[1]
 			local y = mousey - self.Dragging[2]
@@ -46,14 +47,9 @@ end
 			self._Cursor = "arrow"
 		end
 
-		if ( self.y < 0 ) then
-			self:SetPos( self.x, 0 )
-		end
-
 	end
 
 	function TRAIT:OnMousePressed()
-
 		if ( self:GetDraggable() && self:IsInBounds ( gui.MouseX ( ), gui.MouseY ( ) ) ) then
 			self.Dragging = { gui.MouseX() - self.x, gui.MouseY() - self.y }
 			self:MouseCapture( true )

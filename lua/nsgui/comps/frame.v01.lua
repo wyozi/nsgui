@@ -34,5 +34,6 @@ nsgui.skin.HookPaint(PANEL, "PaintFrame")
 nsgui.trait.Import(PANEL, "center")
 nsgui.trait.Import(PANEL, "drag")
 nsgui.trait.Import(PANEL, "resize")
+nsgui.trait.Import(PANEL, "gestures")
 
 nsgui.Register("NSFrame", PANEL, "EditablePanel")
