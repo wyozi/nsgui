@@ -33,6 +33,14 @@ function nsgui.trait.Import(metapanel, trait)
 			objtbl [ k ] = func
 		end
 	end
+
+	if objtbl.Dependencies then
+		for k, v in pairs ( objtbl.Dependencies ) do
+			if ( not table.HasValue ( metapanel._ImportedTraits, v ) ) then
+				error ( "The trait '" .. trait .. "' requires the trait '".. v .. "'' to function properly.", 2 )
+			end
+		end
+	end
 	
 	table.Merge ( metapanel, objtbl )
 end
