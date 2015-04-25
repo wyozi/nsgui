@@ -34,12 +34,20 @@ function SKIN:PaintFrame(panel, w, h)
 	self:PaintFrameHeader(panel, w, h)
 end
 
-SKIN.Color_ButtonBackground = Color(255, 255, 255)
+SKIN.Color_ButtonBackground = Color(236, 236, 236)
 SKIN.Color_ButtonOutline = Color(0, 0, 0, 100)
 SKIN.Color_ButtonForeground = Color(51, 51, 51)
 
 function SKIN:PaintButton(panel, w, h)
-	surface.SetDrawColor(panel:GetColor() or self.Color_ButtonBackground)
+	local bgclr = panel:GetColor() or self.Color_ButtonBackground
+
+	if panel:GetHovered() then
+		local h, s, v = ColorToHSV(bgclr)
+		local bgclr1 = bgclr
+		bgclr = HSVToColor(h, s, math.Clamp(v + 0.15, 0, 1))
+	end
+
+	surface.SetDrawColor(bgclr)
 	surface.DrawRect(0, 0, w, h)
 
 	surface.SetDrawColor(self.Color_ButtonOutline)

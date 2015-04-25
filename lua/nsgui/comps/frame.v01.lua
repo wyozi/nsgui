@@ -10,7 +10,7 @@ function PANEL:Init()
 
 	self.CloseButton.DoClick = function() self:Close() end
 
-	self.CloseButton:SetColor(Color(255, 25, 25))
+	self.CloseButton:SetColor(Color(210, 77, 87))
 
 	self:SetDraggable(true)
 	self:SetSizeable(true)
