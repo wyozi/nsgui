@@ -2,12 +2,14 @@ nsgui.skin = nsgui.skin or {}
 nsgui.skin.Skins = nsgui.skin.Skins or {}
 
 function nsgui.skin.Register(id, tbl)
-	for _, trait in pairs ( nsgui.trait.Traits ) do
-		if trait.AddToSkin then
-			nsgui.trait.Import(SKIN, _)
+	if ( nsgui.trait ) then
+		for _, trait in pairs ( nsgui.trait.Traits ) do
+			if trait.AddToSkin then
+				nsgui.trait.Import(tbl, _)
+			end
 		end
 	end
-
+	
 	nsgui.skin.Skins[id] = tbl
 	return tbl
 end
