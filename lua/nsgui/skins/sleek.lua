@@ -1,14 +1,14 @@
 local SKIN = {}
 
-surface.CreateFont ( "Roboto 16", {
+surface.CreateFont("Roboto 16", {
 	size = 16,
 	font = "Roboto",
 })
 
 local blur = Material("pp/blurscreen")
 
-function SKIN:DrawBlur ( p, amount, heavyness )
-	local x, y = p:localToScreen(0, 0)
+function SKIN:DrawBlur(p, amount, heavyness)
+	local x, y = p:GetRelativePos(0, 0)
 	local scrW, scrH = ScrW(), ScrH()
 
 	surface.SetDrawColor(255,255,255)
@@ -23,11 +23,11 @@ function SKIN:DrawBlur ( p, amount, heavyness )
 	end
 end
 
-function SKIN:PaintFrameBackground( panel, w, h )
-	self:DrawBlur ( panel, 3, 6 )
+function SKIN:PaintFrameBackground(panel, w, h)
+	self:DrawBlur(panel, 3, 6)
 
 	surface.SetDrawColor(0, 0, 0, 100)
-	surface.DrawRect ( 0, 0, w, h )
+	surface.DrawRect(0, 0, w, h)
 
 	surface.DrawOutlinedRect(0, 0, w, h)
 end
@@ -45,13 +45,13 @@ function SKIN:PaintFrame(panel, w, h)
 end
 
 function SKIN:PaintButton(panel, w, h)
-	surface.SetDrawColor( panel:GetColor ( ) )
+	surface.SetDrawColor(panel:GetColor())
 	surface.DrawRect(0, 0, w, h)
 
 	surface.SetDrawColor(0, 0, 0, 100)
 	surface.DrawOutlinedRect(0, 0, w, h)
 
-	draw.SimpleText(panel:GetText(), panel:GetFont ( ), w/2, h/2, panel:GetTextColor ( ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+	draw.SimpleText(panel:GetText(), panel:GetFont(), w/2, h/2, panel:GetTextColor(), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 end
 
 nsgui.skin.Register("sleek", SKIN)
