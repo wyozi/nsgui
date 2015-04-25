@@ -2,7 +2,7 @@ local TRAIT = {}
 
 -- Panels have Hovered property by default, we create an accessor for that
 -- because accessors > public fields
-AccessorFunc(TRAIT, "Hovered", "Hovered")
+nsgui.Accessor(TRAIT, "Hovered", "Hovered")
 
 function TRAIT:OnMousePressed(mousecode)
 	if mousecode == MOUSE_LEFT and self.DoClick then self:DoClick() end 

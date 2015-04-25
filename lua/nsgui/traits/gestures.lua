@@ -2,11 +2,13 @@ TRAIT = { }
 
 TRAIT.Dependencies = { "drag" }
 
-AccessorFunc(TRAIT, "_canfullscreen", "CanFullScreen", FORCE_BOOL)
+nsgui.Accessor(TRAIT, "_canfullscreen", "CanFullScreen", FORCE_BOOL)
 
 function TRAIT:Init()
 	self:SetCanFullScreen(true)
 end
+
+local GESTURE_UP
 
 local alpha = 0
 local speed = 500

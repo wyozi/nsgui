@@ -1,5 +1,17 @@
 nsgui = nsgui or {}
 
+function nsgui.Accessor(panel, fieldname, name)
+	panel["Get" .. name] = function(self)
+		return self[fieldname]
+	end
+
+	panel["Set" .. name] = function(self, newval)
+		self[fieldname] = newval
+
+		return self -- for chaining
+	end
+end
+
 nsgui.trait = nsgui.trait or {}
 nsgui.trait.Traits = nsgui.trait.Traits or {}
 function nsgui.trait.Register(id, tbl)

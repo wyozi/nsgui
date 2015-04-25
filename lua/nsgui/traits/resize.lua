@@ -1,8 +1,8 @@
 local TRAIT = {}
 
-AccessorFunc(TRAIT, "_sizeable", "Sizeable", FORCE_BOOL)
-AccessorFunc(TRAIT, "_minwidth", "MinWidth")
-AccessorFunc(TRAIT, "_minheight", "MinHeight")
+nsgui.Accessor(TRAIT, "_sizeable", "Sizeable", FORCE_BOOL)
+nsgui.Accessor(TRAIT, "_minwidth", "MinWidth")
+nsgui.Accessor(TRAIT, "_minheight", "MinHeight")
 
 function TRAIT:Init()
 

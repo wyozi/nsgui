@@ -1,7 +1,6 @@
 local TRAIT = {}
 
-AccessorFunc(TRAIT, "_draggable", "Draggable", FORCE_BOOL)
-
+nsgui.Accessor(TRAIT, "_draggable", "Draggable", FORCE_BOOL)
 
 function TRAIT:Init()
 	self:SetDragBounds(0, 0, self:GetWide(), self:GetTall())

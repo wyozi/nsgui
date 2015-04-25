@@ -1,7 +1,7 @@
 local PANEL = {}
 
-AccessorFunc(PANEL, "_title", "Title")
-AccessorFunc(PANEL, "_skin", "Skin")
+nsgui.Accessor(PANEL, "_title", "Title")
+nsgui.Accessor(PANEL, "_skin", "Skin")
 
 function PANEL:Init()
 	self.CloseButton = vgui.Create("NSButton", self)
