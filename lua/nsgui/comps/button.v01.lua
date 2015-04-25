@@ -12,4 +12,4 @@ function PANEL:OnMousePressed(mousecode)
 end
 nsgui.skin.HookPaint(PANEL, "PaintButton")
 
-vgui.Register("NSButton", PANEL, "Panel")
+nsgui.Register("NSButton", PANEL, "Panel")
