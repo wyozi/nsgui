@@ -1,7 +1,6 @@
 TRAIT = { }
 
 TRAIT.Default = true
-TRAIT.AddToSkin = true
 
 function TRAIT:GetRelativePos(x, y)
 	local sx, sy = self:GetPos()
