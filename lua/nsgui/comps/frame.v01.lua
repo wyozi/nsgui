@@ -31,4 +31,4 @@ nsgui.trait.Import(PANEL, "center")
 nsgui.trait.Import(PANEL, "drag")
 nsgui.trait.Import(PANEL, "resize")
 
-vgui.Register("NSFrame", PANEL, "EditablePanel")
+nsgui.Register("NSFrame", PANEL, "EditablePanel")

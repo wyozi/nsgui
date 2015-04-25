@@ -1,5 +1,7 @@
 local TRAIT = {}
 
+TRAIT.Default = true
+
 function TRAIT:AddHook(name, id, fn)
 	self._hooks = self._hooks or {}
 	self._hooks[name] = self._hooks[name] or {}
