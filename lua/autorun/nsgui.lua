@@ -17,15 +17,17 @@ AddLUA("nsgui/skins")
 AddLUA("nsgui/comps")
 
 if SERVER then return end
--- include can't seem to find example.lua.
 
 function nsgui.Example()
 	local fr = vgui.Create("NSFrame")
-	fr:SetSize(800, 400) -- 600 is way too tall for my resolution.
+	fr:SetSize(800, 400)
 	fr:Center()
 	fr:SetTitle("Hello world")
+	fr:SetSkin("sleek_blur")
 
-	local btn = fr:Add("NSButton", 25, 200, 200, 35)
+	local btn = fr:Add("NSButton")
+	btn:SetPos(5, 30)
+	btn:SetSize(150, 30)
 	btn:SetText "Click me!"
 
 	fr:MakePopup()
