@@ -6,14 +6,14 @@ AccessorFunc(PANEL, "_skin", "Skin")
 function PANEL:Init()
 	self.CloseButton = vgui.Create("NSButton", self)
 	self.CloseButton:SetText("X")
-	self.CloseButton:SetTextColor( Color ( 255, 255, 255 ) )
+	self.CloseButton:SetTextColor(Color(255, 255, 255))
 
 	self.CloseButton.DoClick = function() self:Close() end
 
-	self.CloseButton:SetColor ( Color ( 255, 25, 25 ) )
+	self.CloseButton:SetColor(Color(255, 25, 25))
 
-	self:SetDraggable ( true )
-	self:SetSizeable ( true )
+	self:SetDraggable(true)
+	self:SetSizeable(true)
 end
 
 function PANEL:Close()

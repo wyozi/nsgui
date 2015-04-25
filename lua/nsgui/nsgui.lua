@@ -16,15 +16,15 @@ function nsgui.trait.Import(metapanel, trait)
 
 	local objtbl = {}
 
-	for k, func in pairs ( traitobj ) do
-		if isfunction ( func ) then
+	for k, func in pairs(traitobj) do
+		if isfunction(func) then
 			if metapanel [ k ] then
 				objtbl [ "_" .. k ] = func
 
 				local oldf = metapanel [ k ]
-				metapanel [ k ] = function ( ... )
-					oldf ( ... )
-					objtbl [ "_" .. k ] ( ... )
+				metapanel [ k ] = function(...)
+					oldf(...)
+					objtbl [ "_" .. k ](...)
 				end
 			else
 				objtbl [ k ] = func
@@ -35,14 +35,14 @@ function nsgui.trait.Import(metapanel, trait)
 	end
 
 	if objtbl.Dependencies then
-		for k, v in pairs ( objtbl.Dependencies ) do
-			if ( not table.HasValue ( metapanel._ImportedTraits, v ) ) then
-				error ( "The trait '" .. trait .. "' requires the trait '".. v .. "'' to function properly.", 2 )
+		for k, v in pairs(objtbl.Dependencies) do
+			if(not table.HasValue(metapanel._ImportedTraits, v)) then
+				error("The trait '" .. trait .. "' requires the trait '".. v .. "'' to function properly.", 2)
 			end
 		end
 	end
 	
-	table.Merge ( metapanel, objtbl )
+	table.Merge(metapanel, objtbl)
 end
 
 function nsgui.Register(name, panel, inherit)

@@ -19,6 +19,6 @@ function nsgui.skin.HookPaint(metapanel, funcname)
 		local skin = panel:GetSkin() or "sleek"
 		local skinobj = nsgui.skin.Skins[skin] or nsgui.skin.Skins.sleek
 
-		skinobj[funcname](skinobj, panel, w, h )
+		skinobj[funcname](skinobj, panel, w, h)
 	end
 end

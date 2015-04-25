@@ -9,9 +9,9 @@ function PANEL:Init()
 	self:SetMouseInputEnabled(true)
 	self:SetCursor("hand")
 
-	self:SetColor ( Color ( 255, 255, 255 ) )
-	self:SetTextColor ( Color ( 51, 51, 51 ) )
-	self:SetFont ( "Roboto 16" )
+	self:SetColor(Color(255, 255, 255))
+	self:SetTextColor(Color(51, 51, 51))
+	self:SetFont("Roboto 16")
 end
 
 function PANEL:OnMousePressed(mousecode)

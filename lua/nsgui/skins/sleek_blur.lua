@@ -9,7 +9,7 @@ function SKIN:DrawBlur(p, amount, passes)
 	surface.SetMaterial(blur)
 
 	for i = 1, passes do
-		blur:SetFloat("$blur", (i / 3) * (amount or 6))
+		blur:SetFloat("$blur",(i / 3) *(amount or 6))
 		blur:Recompute()
 
 		render.UpdateScreenEffectTexture()
