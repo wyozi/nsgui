@@ -8,6 +8,7 @@ function TRAIT:Init()
 	self:SetCanFullScreen(true)
 
 	self:AddHook("Think", "GestureThink", function() self:GestureThink() end)
+	self:AddHook("OnMousePressed", "GestureOnMousePressed", function() self:GestureOnMousePressed() end)
 end
 
 function TRAIT:GestureThink()
@@ -15,8 +16,10 @@ function TRAIT:GestureThink()
 		local x, y = self:GetParent():ScreenToLocal(gui.MousePos())
 
 		if y < 10 and not self._NormalBounds then
+			local x, y = self:GetPos()
+
 			self._NormalBounds = {
-				pos = {self:GetPos()},
+				pos = {x, 0},
 				size = {self:GetSize()}
 			}
 			
@@ -35,6 +38,8 @@ function TRAIT:GestureThink()
 			self:SetPos(unpack(self._NormalBounds.pos))
 			self:SetSize(unpack(self._NormalBounds.size))
 			self._NormalBounds = nil
+
+			self.Dragging = { gui.MouseX() - self.x, gui.MouseY() - self.y }
 
 			self._OverrideDragPos = false
 		end
