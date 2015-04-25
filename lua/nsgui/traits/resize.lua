@@ -4,13 +4,14 @@ AccessorFunc(TRAIT, "_sizeable", "Sizeable", FORCE_BOOL )
 AccessorFunc(TRAIT, "_minwidth", "MinWidth" )
 AccessorFunc(TRAIT, "_minheight", "MinHeight" )
 
-function TRAIT:MakeSizeable ( )
-	self:SetSizeable ( true )
+function TRAIT:Init ( )
 
 	self:SetMinWidth( 50 )
 	self:SetMinHeight( 50 )
 
-	function self:Think()
+end
+
+	function TRAIT:Think()
 		local mousex = math.Clamp( gui.MouseX(), 1, ScrW()-1 )
 	    local mousey = math.Clamp( gui.MouseY(), 1, ScrH()-1 )
 
@@ -25,6 +26,7 @@ function TRAIT:MakeSizeable ( )
 
 			self:SetSize( x, y )
 			self:SetCursor( "sizenwse" )
+			self._Cursor = "sizenwse"
 			return
 
 		end
@@ -34,15 +36,19 @@ function TRAIT:MakeSizeable ( )
 			 mousey > ( self.y + self:GetTall() - 20 ) ) then
 
 			self:SetCursor( "sizenwse" )
+			self._Cursor = "sizenwse"
 			return
 
 		end
 
-		self:SetCursor( "arrow" )
+		if ( self._Cursor != "arrow" and ( self._Cursor == "sizenwse" ) ) then
+			self:SetCursor "arrow"
+			self._Cursor = "arrow"
+		end
 
 	end
 
-	function self:OnMousePressed()
+	function TRAIT:OnMousePressed()
 
 		if ( self:GetSizeable ( ) ) then
 
@@ -58,7 +64,7 @@ function TRAIT:MakeSizeable ( )
 
 	end
 
-	function self:OnMouseReleased()
+	function TRAIT:OnMouseReleased()
 
 		if ( self:GetSizeable ( ) ) then
 			self.Sizing = nil
@@ -66,6 +72,5 @@ function TRAIT:MakeSizeable ( )
 		end
 
 	end
-end
 
 nsgui.trait.Register("resize", TRAIT)

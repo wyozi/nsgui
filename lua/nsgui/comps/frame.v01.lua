@@ -5,8 +5,12 @@ AccessorFunc(PANEL, "_skin", "Skin")
 
 function PANEL:Init()
 	self.CloseButton = vgui.Create("NSButton", self)
-	self.CloseButton:SetText("Close")
+	self.CloseButton:SetText("X")
+	self.CloseButton:SetTextColor( Color ( 255, 255, 255 ) )
+
 	self.CloseButton.DoClick = function() self:Close() end
+
+	self.CloseButton:SetColor ( Color ( 255, 25, 25 ) )
 
 	self:SetDraggable ( true )
 	self:SetSizeable ( true )
@@ -18,8 +22,8 @@ end
 
 function PANEL:PerformLayout()
 	local w, h = self:GetSize()
-	self.CloseButton:SetPos(w - 53, 3)
-	self.CloseButton:SetSize(50, 20)
+	self.CloseButton:SetPos(w - 43, 3)
+	self.CloseButton:SetSize(40, 20)
 
 	-- TODO make overriding this possible in a skin
 	self:SetDragBounds(0, 0, w, 25)
