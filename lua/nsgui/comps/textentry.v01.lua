@@ -22,5 +22,6 @@ end
 nsgui.skin.HookPaint(PANEL, "PaintTextEntry", true)
 
 nsgui.trait.Import(PANEL, "state")
+nsgui.trait.Import(PANEL, "editable")
 
 nsgui.Register("NSTextEntry", PANEL, "TextEntry")

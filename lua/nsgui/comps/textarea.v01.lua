@@ -12,12 +12,9 @@ function PANEL:Init()
 	self:SetMultiline(true)
 end
 
-function PANEL:IsEditing()
-	return self == vgui.GetKeyboardFocus()
-end
-
 nsgui.skin.HookPaint(PANEL, "PaintTextEntry", true)
 
 nsgui.trait.Import(PANEL, "state")
+nsgui.trait.Import(PANEL, "editable")
 
 nsgui.Register("NSTextArea", PANEL, "TextEntry")
