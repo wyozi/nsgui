@@ -30,11 +30,15 @@ function nsgui.Example(skin)
 	local btn = fr:Add("NSButton")
 	btn:SetPos(10, 40)
 	btn:SetSize(250, 30)
-	btn:SetText "Click me!"
+	btn:SetText("Click me!")
+	btn.DoClick = function() print("Clicked!") end
 
-	function btn.DoClick()
-		chat.AddText "You clicked me :D"
-	end
+	local btn_disabled = fr:Add("NSButton")
+	btn_disabled:SetPos(270, 40)
+	btn_disabled:SetSize(250, 30)
+	btn_disabled:SetText("I am disabled")
+	btn_disabled:SetEnabled(false)
+	btn_disabled.DoClick = function() print("Clicked!") end
 
 	local textentry = fr:Add("NSTextEntry")
 	textentry:SetPos(10, 80)

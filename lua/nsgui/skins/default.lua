@@ -40,13 +40,19 @@ function SKIN:PaintFrame(panel, w, h)
 end
 
 SKIN.Color_ButtonBackground = Color(236, 236, 236)
+SKIN.Color_ButtonBackgroundDisabled = Color(236, 236, 236)
 SKIN.Color_ButtonOutline = Color(0, 0, 0, 100)
 SKIN.Color_ButtonForeground = Color(51, 51, 51)
+SKIN.Color_ButtonForegroundDisabled = Color(191, 191, 191)
 
 function SKIN:PaintButton(panel, w, h)
 	local bgclr = panel:GetColor() or self.Color_ButtonBackground
+	local fgclr = panel:GetTextColor() or self.Color_ButtonForeground
 
-	if panel:GetHovered() then
+	if not panel:IsEnabled() then
+		bgclr = self.Color_ButtonBackgroundDisabled
+		fgclr = self.Color_ButtonForegroundDisabled
+	elseif panel:GetHovered() then
 		local h, s, v = ColorToHSV(bgclr)
 		local bgclr1 = bgclr
 		bgclr = HSVToColor(h, s, math.Clamp(v + 0.15, 0, 1))
@@ -58,7 +64,7 @@ function SKIN:PaintButton(panel, w, h)
 	surface.SetDrawColor(self.Color_ButtonOutline)
 	surface.DrawOutlinedRect(0, 0, w, h)
 
-	draw.SimpleText(panel:GetText(), panel:GetFont() or self.Font, w/2, h/2, panel:GetTextColor() or self.Color_ButtonForeground, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+	draw.SimpleText(panel:GetText(), panel:GetFont() or self.Font, w/2, h/2, fgclr, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 end
 
 SKIN.Color_TextEntryBackground = Color(236, 236, 236)
