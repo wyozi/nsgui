@@ -2,14 +2,16 @@ local PANEL = {}
 
 nsgui.Accessor(PANEL, "_title", "Title")
 nsgui.Accessor(PANEL, "_skin", "Skin")
+nsgui.Accessor(PANEL, "_headertall", "HeaderTall")
 
 function PANEL:Init()
 	self.CloseButton = vgui.Create("NSButton", self)
-	self.CloseButton:SetText("X")
+	self.CloseButton:SetText("x")
 	self.CloseButton:SetTextColor(Color(255, 255, 255))
 
-	self.CloseButton.DoClick = function() self:Close() end
+	nsgui.skin.HookPaint(self.CloseButton, "PaintFrameCloseButton")
 
+	self.CloseButton.DoClick = function() self:Close() end
 	self.CloseButton:SetColor(Color(210, 77, 87))
 
 	self:SetDraggable(true)
@@ -21,12 +23,29 @@ function PANEL:Close()
 end
 
 function PANEL:PerformLayout()
-	local w, h = self:GetSize()
-	self.CloseButton:SetPos(w - 43, 3)
-	self.CloseButton:SetSize(40, 20)
+	local _w, _h = self:GetSize()
 
-	-- TODO make overriding this possible in a skin
-	self:SetDragBounds(0, 0, w, 25)
+	if nsgui.skin.HookCall(self, "FrameCloseButtonBounds") then
+		local x, y, w, h = nsgui.skin.HookCall(self, "FrameCloseButtonBounds")
+
+		self.CloseButton:SetPos(x, y)
+		self.CloseButton:SetSize(w, h)
+	else
+		self.CloseButton:SetPos(_w - 43, 3)
+		self.CloseButton:SetSize(40, 20)
+	end
+
+	if nsgui.skin.HookCall(self, "FrameBounds") then
+		self:SetDragBounds(nsgui.skin.HookCall(self, "FrameBounds"))
+	else
+		self:SetDragBounds(0, 0, _w, 25)
+	end
+
+	if nsgui.skin.HookCall(self, "FrameDockPadding") then
+		self:DockPadding(nsgui.skin.HookCall(self, "FrameDockPadding"))
+	else
+		self:DockPadding(0, 25, 0, 0)
+	end
 end
 
 nsgui.skin.HookPaint(PANEL, "PaintFrame")
