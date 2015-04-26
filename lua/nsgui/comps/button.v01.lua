@@ -10,7 +10,9 @@ function PANEL:Init()
 	self:SetCursor("hand")
 end
 
-nsgui.trait.Import(PANEL, "mouseinput")
 nsgui.skin.HookPaint(PANEL, "PaintButton")
+
+nsgui.trait.Import(PANEL, "mouseinput")
+nsgui.trait.Import(PANEL, "state")
 
 nsgui.Register("NSButton", PANEL, "Panel")

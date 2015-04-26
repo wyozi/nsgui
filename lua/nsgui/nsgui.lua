@@ -1,8 +1,17 @@
 nsgui = nsgui or {}
 
-function nsgui.Accessor(panel, fieldname, name)
-	panel["Get" .. name] = function(self)
-		return self[fieldname]
+function nsgui.Accessor(panel, fieldname, name, forceType, default)
+	local function getter(self)
+		local val = self[fieldname]
+		if val == nil then return default end
+		return val
+	end
+
+	panel["Get" .. name] = getter
+
+	-- If it's forced to boolean, we add additional getter prefixed with "Is"
+	if forceType == FORCE_BOOL then
+		panel["Is" .. name] = getter
 	end
 
 	panel["Set" .. name] = function(self, newval)

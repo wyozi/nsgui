@@ -18,4 +18,6 @@ end
 
 nsgui.skin.HookPaint(PANEL, "PaintTextEntry", true)
 
+nsgui.trait.Import(PANEL, "state")
+
 nsgui.Register("NSTextArea", PANEL, "TextEntry")
