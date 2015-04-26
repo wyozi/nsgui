@@ -121,15 +121,18 @@ end
 	-- Main Frame Button
 	--
 
-local framebtnalpha = 0
 function SKIN:PaintFrameCloseButton(panel, w, h)
-	if panel.Hovered then
-		framebtnalpha = math.Approach ( framebtnalpha, 200, FrameTime ( ) * 1100 )
-	elseif framebtnalpha then
-		framebtnalpha = math.Approach ( framebtnalpha, 0, FrameTime ( ) * 1100 )
+	if ( not panel.closealpha ) then
+		panel.closealpha = 0
 	end
 
-	surface.SetDrawColor(255,100,100,framebtnalpha)
+	if panel.Hovered then
+		panel.closealpha = math.Approach ( panel.closealpha, 200, FrameTime ( ) * 1100 )
+	elseif panel.closealpha then
+		panel.closealpha = math.Approach ( panel.closealpha, 0, FrameTime ( ) * 1100 )
+	end
+
+	surface.SetDrawColor(255,100,100,panel.closealpha)
 	surface.DrawRect(0,0,w,h)
 	
 	surface.SetTextColor ( 255, 255, 255 )
@@ -151,22 +154,28 @@ function surface.DrawThickOutlinedRect ( x, y, w, h, thickness )
 	end
 end
 
-local btnalpha = 200
 function SKIN:PaintButton(panel, w, h)
+	if ( not panel.btnalpha ) then
+		panel.btnalpha = 200
+	end
+
 	surface.SetDrawColor ( 0, 0, 0, 230 )
 	surface.DrawThickOutlinedRect ( 0, 0, w, h, 2 )
 
-	if panel.Hovered then
+	if (panel.Hovered and panel:GetEnabled()) then
 		if panel.Clicked then
-			btnalpha = math.Approach ( btnalpha, 150, FrameTime ( ) * 250 )
+			panel.btnalpha = math.Approach ( panel.btnalpha, 150, FrameTime ( ) * 250 )
 		else
-			btnalpha = math.Approach ( btnalpha, 175, FrameTime ( ) * 250 )
+			panel.btnalpha = math.Approach ( panel.btnalpha, 175, FrameTime ( ) * 250 )
 		end
+		surface.SetDrawColor ( 100, panel.btnalpha, 100 )
+	elseif (not panel:GetEnabled()) then
+		surface.SetDrawColor ( 160, 160, 160 )
 	else
-		btnalpha = math.Approach ( btnalpha, 200, FrameTime ( ) * 250 )
+		panel.btnalpha = math.Approach ( panel.btnalpha, 200, FrameTime ( ) * 250 )
+		surface.SetDrawColor ( 100, panel.btnalpha, 100 )
 	end
 
-	surface.SetDrawColor ( 100, btnalpha, 100 )
 	surface.DrawRect ( 2, 2, w - 4, h - 4 )
 
 	surface.SetTextColor ( 255, 255, 255 )
