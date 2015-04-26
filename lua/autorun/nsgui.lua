@@ -47,10 +47,10 @@ function nsgui.Example(skin)
 	textentry:SetText("Hello")
 
 	local textarea = fr:Add("NSTextArea")
-	textentry:Dock(TOP)
-	textentry:SetTall(90)
-	textentry:DockMargin(10,10,10,0)
-	
+	textarea:Dock(TOP)
+	textarea:SetTall(90)
+	textarea:DockMargin(10,10,10,0)
+
 	textarea:SetText("Lorem\nIpsum")
 
 	fr:MakePopup()
