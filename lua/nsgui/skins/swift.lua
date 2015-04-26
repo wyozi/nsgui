@@ -109,15 +109,6 @@ function SKIN:PaintFrameHeader(panel, w, h)
 	surface.DrawText(panel:GetTitle())
 end
 
-function SKIN:PaintFrameSizableHandle(panel, w, h)
-	surface.SetDrawColor(Color(0,0,0,200))
-
-	local padding = 3
-	surface.DrawLine(w-padding, h-6, w-6, h-padding)
-	surface.DrawLine(w-padding, h-10, w-10, h-padding)
-	surface.DrawLine(w-padding, h-14, w-14, h-padding)
-end
-
 function SKIN:PaintFrame(panel, w, h)
 	self:PaintFrameHeader(panel, w, h )
 
@@ -170,7 +161,7 @@ function SKIN:PaintButton(panel, w, h)
 		panel.btnalpha = 200
 	end
 
-	surface.SetDrawColor ( 0, 0, 0, 230 )
+	surface.SetDrawColor ( 64, 64, 64 )
 	surface.DrawThickOutlinedRect ( 0, 0, w, h, 2 )
 
 	if (panel.Hovered and panel:GetEnabled()) then
