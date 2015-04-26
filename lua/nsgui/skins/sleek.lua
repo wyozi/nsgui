@@ -4,6 +4,7 @@ surface.CreateFont("Roboto 16", {
 	size = 16,
 	font = "Roboto",
 })
+
 SKIN.FrameHeaderFont = "Roboto 16"
 SKIN.Font = "Roboto 16"
 
@@ -54,6 +55,10 @@ function SKIN:PaintButton(panel, w, h)
 	surface.DrawOutlinedRect(0, 0, w, h)
 
 	draw.SimpleText(panel:GetText(), panel:GetFont() or self.Font, w/2, h/2, panel:GetTextColor() or self.Color_ButtonForeground, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+end
+
+function SKIN:PaintFrameCloseButton(panel, w, h)
+	self:PaintButton(panel, w, h)
 end
 
 nsgui.skin.Register("sleek", SKIN)
