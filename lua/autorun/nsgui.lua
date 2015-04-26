@@ -29,7 +29,7 @@ function nsgui.Example(skin)
 
 	local btn = fr:Add("NSButton")
 	btn:SetPos(10, 40)
-	btn:SetSize(150, 30)
+	btn:SetSize(250, 30)
 	btn:SetText "Click me!"
 
 	function btn.DoClick()
@@ -38,8 +38,13 @@ function nsgui.Example(skin)
 
 	local textentry = fr:Add("NSTextEntry")
 	textentry:SetPos(10, 80)
-	textentry:SetSize(150, 30)
+	textentry:SetSize(250, 30)
 	textentry:SetText("Hello")
+
+	local textarea = fr:Add("NSTextArea")
+	textarea:SetPos(10, 120)
+	textarea:SetSize(250, 90)
+	textarea:SetText("Lorem\nIpsum")
 
 	fr:MakePopup()
 end
