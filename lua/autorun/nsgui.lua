@@ -18,12 +18,14 @@ AddLUA("nsgui/comps")
 
 if SERVER then return end
 
-function nsgui.Example()
+function nsgui.Example(skin)
 	local fr = vgui.Create("NSFrame")
 	fr:SetSize(800, 400)
 	fr:Center()
 	fr:SetTitle("Hello world")
 	fr:SetIcon("icon16/bomb.png")
+
+	if skin then fr:SetSkin(skin) end
 
 	local btn = fr:Add("NSButton")
 	btn:SetPos(10, 40)
@@ -42,6 +44,6 @@ function nsgui.Example()
 	fr:MakePopup()
 end
 
-concommand.Add("nsgui.Example", function()
-	nsgui.Example()
+concommand.Add("nsgui.Example", function(ply, cmd, args)
+	nsgui.Example(args[1])
 end)
