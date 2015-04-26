@@ -23,17 +23,21 @@ function nsgui.Example()
 	fr:SetSize(800, 400)
 	fr:Center()
 	fr:SetTitle("Hello world")
-	fr:SetSkin("kool")
+	--fr:SetSkin("kool")
 
 	local btn = fr:Add("NSButton")
-	btn:Dock(TOP)
-	btn:DockMargin(10,10,10,10)
-	btn:SetTall(75)
+	btn:SetPos(10, 40)
+	btn:SetSize(150, 30)
 	btn:SetText "Click me!"
 
-	function btn.DoClick ( )
+	function btn.DoClick()
 		chat.AddText "You clicked me :D"
 	end
+
+	local textentry = fr:Add("NSTextEntry")
+	textentry:SetPos(10, 80)
+	textentry:SetSize(150, 30)
+	textentry:SetText("Hello")
 
 	fr:MakePopup()
 end

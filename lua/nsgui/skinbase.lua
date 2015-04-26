@@ -22,12 +22,14 @@ end
 
 local DEFAULT_SKIN = "default"
 
-function nsgui.skin.HookPaint(metapanel, funcname)
+function nsgui.skin.HookPaint(metapanel, funcname, returnValue)
 	metapanel.Paint = function(panel, w, h)
 		local skin = panel:GetSkin() or DEFAULT_SKIN
 		local skinobj = nsgui.skin.Skins[skin] or nsgui.skin.Skins[DEFAULT_SKIN]
 
 		skinobj[funcname](skinobj, panel, w, h)
+
+		return returnValue
 	end
 end
 
