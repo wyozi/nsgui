@@ -22,3 +22,15 @@ function nsgui.skin.HookPaint(metapanel, funcname)
 		skinobj[funcname](skinobj, panel, w, h)
 	end
 end
+
+function nsgui.skin.HookCall(metapanel, funcname)
+	local skin = metapanel:GetSkin() or "sleek"
+	local skinobj = nsgui.skin.Skins[skin] or nsgui.skin.Skins.sleek
+	local w, h = metapanel:GetSize()
+
+	if skinobj[funcname] then
+		return skinobj[funcname](metapanel, metapanel, w, h)
+	end
+	
+	return false
+end
