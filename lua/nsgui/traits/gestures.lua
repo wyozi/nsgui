@@ -1,6 +1,6 @@
 TRAIT = { }
 
-TRAIT.Dependencies = { "drag" }
+TRAIT.Dependencies = { "draggable" }
 
 nsgui.Accessor(TRAIT, "_canfullscreen", "CanFullScreen", FORCE_BOOL)
 

@@ -15,7 +15,7 @@ function PANEL:Init()
 	self.CloseButton:SetColor(Color(210, 77, 87))
 
 	self:SetDraggable(true)
-	self:SetSizeable(true)
+	self:SetSizable(true)
 end
 
 function PANEL:SetIcon(str)
@@ -55,8 +55,8 @@ end
 nsgui.skin.HookPaint(PANEL, "PaintFrame")
 
 nsgui.trait.Import(PANEL, "center")
-nsgui.trait.Import(PANEL, "drag")
-nsgui.trait.Import(PANEL, "resize")
+nsgui.trait.Import(PANEL, "draggable")
+nsgui.trait.Import(PANEL, "resizable")
 nsgui.trait.Import(PANEL, "gestures")
 
 nsgui.Register("NSFrame", PANEL, "EditablePanel")

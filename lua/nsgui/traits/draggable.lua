@@ -70,4 +70,4 @@ function TRAIT:OnMouseReleased()
 	end
 end
 
-nsgui.trait.Register("drag", TRAIT)
+nsgui.trait.Register("draggable", TRAIT)
