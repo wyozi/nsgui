@@ -70,7 +70,7 @@ end
 SKIN.Color_TextEntryBackground = Color(236, 236, 236)
 SKIN.Color_TextEntryOutline = Color(0, 0, 0, 100)
 SKIN.Color_TextEntryForeground = Color(51, 51, 51)
-SKIN.Color_TextEntryForegroundHighlighted = Color(255, 127, 0)
+SKIN.Color_TextEntryForegroundHighlighted = Color(107, 185, 240)
 SKIN.Font_TextEntry = SKIN.Font
 
 function SKIN:PaintTextEntryBackground(panel, w, h)
