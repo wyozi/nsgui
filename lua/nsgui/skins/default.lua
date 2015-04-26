@@ -61,4 +61,4 @@ function SKIN:PaintFrameCloseButton(panel, w, h)
 	self:PaintButton(panel, w, h)
 end
 
-nsgui.skin.Register("sleek", SKIN)
+nsgui.skin.Register("default", SKIN)
