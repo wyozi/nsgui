@@ -26,9 +26,14 @@ function nsgui.Example()
 	fr:SetSkin("sleek_blur")
 
 	local btn = fr:Add("NSButton")
-	btn:SetPos(5, 30)
-	btn:SetSize(150, 30)
+	btn:Dock(TOP)
+	btn:DockMargin(10,10,10,10)
+	btn:SetTall(75)
 	btn:SetText "Click me!"
+
+	function btn.DoClick ( )
+		chat.AddText "You clicked me :D"
+	end
 
 	fr:MakePopup()
 end
