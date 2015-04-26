@@ -64,6 +64,7 @@ end
 SKIN.Color_TextEntryBackground = Color(236, 236, 236)
 SKIN.Color_TextEntryOutline = Color(0, 0, 0, 100)
 SKIN.Color_TextEntryForeground = Color(51, 51, 51)
+SKIN.Color_TextEntryForegroundHighlighted = Color(255, 127, 0)
 SKIN.Font_TextEntry = SKIN.Font
 
 function SKIN:PaintTextEntryBackground(panel, w, h)
@@ -76,21 +77,13 @@ end
 function SKIN:PaintTextEntry(panel, w, h)
 	self:PaintTextEntryBackground(panel, w, h)
 
-	local text = panel:GetText()
-	local font = panel:GetFont() or self.Font_TextEntry
+	-- We use Source function to draw text, so we need to do this to set
+	-- the font to the one we want. Set/GetFont is overridden in textentry.lua
+	-- so this is okay
+	panel:SetFontInternal(panel:GetFont() or self.Font_TextEntry)
+
 	local color = panel:GetTextColor() or self.Color_TextEntryForeground
-	local padding_left = 4
-
-	draw.SimpleText(text, font, padding_left, h/2, color, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-
-	-- Add a blinking cursor
-	if panel:IsEditing() and (math.floor(CurTime()*2) % 2) == 0 then
-		surface.SetFont(font)
-		local tw = surface.GetTextSize(text)
-
-		surface.SetDrawColor(color)
-		surface.DrawLine(padding_left + tw, 8, padding_left + tw, h-8)
-	end
+	panel:DrawTextEntryText(color, self.Color_TextEntryForegroundHighlighted, color)
 end
 
 nsgui.skin.Register("default", SKIN)
