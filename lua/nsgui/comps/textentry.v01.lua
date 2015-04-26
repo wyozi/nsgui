@@ -1,12 +1,14 @@
 local PANEL = {}
 
-AccessorFunc(PANEL, "_font", "Font")
 AccessorFunc(PANEL, "_textcolor", "TextColor")
 AccessorFunc(PANEL, "_color", "Color")
 
+-- We override TextEntry's Font accessors. "Default" font is set in skins
+AccessorFunc(PANEL, "_font", "Font")
+
 function PANEL:Init()
-	self:SetKeyBoardInputEnabled(true)
 	self:SetCursor("beam")
+	self:SetAllowNonAsciiCharacters(true)
 end
 
 function PANEL:IsEditing()
