@@ -27,6 +27,9 @@ function nsgui.Example(skin)
 
 	if skin then fr:SetSkin(skin) end
 
+	-- Skin has to be created first.
+	fr:SetFont("Roboto 16")
+
 	local btn = fr:Add("NSButton")
 	btn:SetPos(10, 40)
 	btn:SetSize(250, 30)
