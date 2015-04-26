@@ -86,6 +86,7 @@ end
 SKIN.Color_TextEntryBackground = Color(236, 236, 236)
 SKIN.Color_TextEntryOutline = Color(0, 0, 0, 100)
 SKIN.Color_TextEntryForeground = Color(51, 51, 51)
+SKIN.Color_TextEntryForegroundDisabled = Color(191, 191, 191)
 SKIN.Color_TextEntryForegroundHighlighted = Color(107, 185, 240)
 SKIN.Font_TextEntry = SKIN.Font
 
@@ -105,6 +106,11 @@ function SKIN:PaintTextEntry(panel, w, h)
 	panel:SetFontInternal(panel:GetFont() or self.Font_TextEntry)
 
 	local color = panel:GetTextColor() or self.Color_TextEntryForeground
+
+	if not panel:IsEnabled() then
+		color = self.Color_TextEntryForegroundDisabled
+	end
+
 	panel:DrawTextEntryText(color, self.Color_TextEntryForegroundHighlighted, color)
 end
 

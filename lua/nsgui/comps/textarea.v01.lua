@@ -10,6 +10,11 @@ function PANEL:Init()
 	self:SetCursor("beam")
 	self:SetAllowNonAsciiCharacters(true)
 	self:SetMultiline(true)
+
+	self:AddHook("OnStateChanged", "DisableInput", function(b)
+		self:SetKeyboardInputEnabled(b)
+		self:SetMouseInputEnabled(b)
+	end)
 end
 
 nsgui.skin.HookPaint(PANEL, "PaintTextEntry", true)

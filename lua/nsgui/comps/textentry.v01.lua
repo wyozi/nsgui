@@ -9,10 +9,11 @@ AccessorFunc(PANEL, "_font", "Font")
 function PANEL:Init()
 	self:SetCursor("beam")
 	self:SetAllowNonAsciiCharacters(true)
-end
 
-function PANEL:IsEditing()
-	return self == vgui.GetKeyboardFocus()
+	self:AddHook("OnStateChanged", "DisableInput", function(b)
+		self:SetKeyboardInputEnabled(b)
+		self:SetMouseInputEnabled(b)
+	end)
 end
 
 function PANEL:SetMultiline(b)
