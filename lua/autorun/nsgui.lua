@@ -27,21 +27,23 @@ function nsgui.Example(skin)
 
 	if skin then fr:SetSkin(skin) end
 
-	-- Skin has to be created first.
-	fr:SetFont("Roboto 16")
-
 	local btn = fr:Add("NSButton")
-	btn:SetPos(10, 40)
-	btn:SetSize(150, 30)
+	btn:Dock(TOP)
+	btn:SetTall(30)
+	btn:DockMargin(10,10,10,0)
+
 	btn:SetText "Click me!"
+	btn:SetFont("Roboto 16")
 
 	function btn.DoClick()
 		chat.AddText "You clicked me :D"
 	end
 
 	local textentry = fr:Add("NSTextEntry")
-	textentry:SetPos(10, 80)
-	textentry:SetSize(150, 30)
+	textentry:Dock(TOP)
+	textentry:SetTall(30)
+	textentry:DockMargin(10,10,10,0)
+
 	textentry:SetText("Hello")
 
 	fr:MakePopup()
