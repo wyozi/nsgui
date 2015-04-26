@@ -79,7 +79,7 @@ function SKIN:FrameDockPadding(panel, w, h)
 	return 4, 36, 4, 4
 end
 
-function SKIN:FrameBounds(panel, w, h)
+function SKIN:FrameDragBounds(panel, w, h)
 	return 0, 0, w, 36
 end
 

@@ -35,8 +35,8 @@ function PANEL:PerformLayout()
 		self.CloseButton:SetSize(40, 20)
 	end
 
-	if nsgui.skin.HookCall(self, "FrameBounds") then
-		self:SetDragBounds(nsgui.skin.HookCall(self, "FrameBounds"))
+	if nsgui.skin.HookCall(self, "FrameDragBounds") then
+		self:SetDragBounds(nsgui.skin.HookCall(self, "FrameDragBounds"))
 	else
 		self:SetDragBounds(0, 0, _w, 25)
 	end
