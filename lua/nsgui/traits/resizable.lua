@@ -1,76 +1,91 @@
 local TRAIT = {}
 
 nsgui.Accessor(TRAIT, "_sizable", "Sizable", FORCE_BOOL)
-nsgui.Accessor(TRAIT, "_minwidth", "MinWidth")
-nsgui.Accessor(TRAIT, "_minheight", "MinHeight")
+nsgui.Accessor(TRAIT, "_minwidth", "MinWidth", FORCE_NUMBER, 50)
+nsgui.Accessor(TRAIT, "_minheight", "MinHeight", FORCE_NUMBER, 50)
+nsgui.Accessor(TRAIT, "_maxwidth", "MaxWidth", FORCE_NUMBER)
+nsgui.Accessor(TRAIT, "_maxheight", "MaxHeight", FORCE_NUMBER)
 
 function TRAIT:Init()
-
-	self:SetMinWidth(50)
-	self:SetMinHeight(50)
-
+	self:AddHook("Think", "SizableThink", function() self:SizableThink() end)
 end
 
-function TRAIT:Think()
+function TRAIT:HoveringSizableEHandle()
+	return gui.MouseX() > (self.x + self:GetWide() - 20)
+end
+function TRAIT:HoveringSizableSHandle()
+	return gui.MouseY() > (self.y + self:GetTall() - 20)
+end
+function TRAIT:HoveringSizableSEHandle()
+	return self:HoveringSizableSHandle() and self:HoveringSizableEHandle()
+end
+
+function TRAIT:SizableThink()
 	local mousex = math.Clamp(gui.MouseX(), 1, ScrW()-1)
 	local mousey = math.Clamp(gui.MouseY(), 1, ScrH()-1)
 
 	if(self.Sizing) then
+		local x, y
+		if self.Sizing[1] then
+			x = mousex - self.Sizing[1]
+			x = math.Clamp(x, self:GetMinWidth(), self:GetMaxWidth() or ScrW())
+			self:SetWide(x)
+		end
+		if self.Sizing[2] then
+			y = mousey - self.Sizing[2]
+			y = math.Clamp(y, self:GetMinHeight(), self:GetMaxHeight() or ScrH())
+			self:SetTall(y)
+		end
 
-		local x = mousex - self.Sizing[1]
-		local y = mousey - self.Sizing[2]
-		local px, py = self:GetPos()
-
-		if(x < self._minwidth) then x = self._minwidth elseif(x > ScrW() - px) then x = ScrW() - px end
-		if(y < self._minheight) then y = self._minheight elseif(y > ScrH() - py) then y = ScrH() - py end
-
-		self:SetSize(x, y)
-		self:SetCursor("sizenwse")
-		self._Cursor = "sizenwse"
+		if x and y then
+			self:SetCursor("sizenwse")
+		elseif x then
+			self:SetCursor("sizewe")
+		elseif y then
+			self:SetCursor("sizens")
+		end
 		return
-
 	end
 
-	if(self.Hovered && self:IsSizable() &&
-		 mousex >(self.x + self:GetWide() - 20) &&
-		 mousey >(self.y + self:GetTall() - 20)) then
-
-		self:SetCursor("sizenwse")
-		self._Cursor = "sizenwse"
-		return
-
+	if self:IsSizable() then
+		if self:HoveringSizableSEHandle() then
+			self:SetCursor("sizenwse")
+			return
+		elseif self:HoveringSizableSHandle() then
+			self:SetCursor("sizens")
+			return
+		elseif self:HoveringSizableEHandle() then
+			self:SetCursor("sizewe")
+			return
+		end
 	end
 
-	if(self._Cursor != "arrow" and(self._Cursor == "sizenwse")) then
-		self:SetCursor "arrow"
-		self._Cursor = "arrow"
-	end
-
+	self:SetCursor("arrow")
 end
 
 function TRAIT:OnMousePressed()
+	if self:IsSizable() then
+		local x, y
 
-	if(self:IsSizable()) then
-
-		if(gui.MouseX() >(self.x + self:GetWide() - 20) &&
-			gui.MouseY() >(self.y + self:GetTall() - 20)) then
-
-			self.Sizing = { gui.MouseX() - self:GetWide(), gui.MouseY() - self:GetTall() }
-			self:MouseCapture(true)
-			return
+		if self:HoveringSizableEHandle() then
+			x = gui.MouseX() - self:GetWide()
+		end
+		if self:HoveringSizableSHandle() then
+			y = gui.MouseY() - self:GetTall()
 		end
 
+		if x or y then
+			self.Sizing = { x, y }
+			self:MouseCapture(true)
+		end
 	end
-
 end
 
 function TRAIT:OnMouseReleased()
-
-	if(self:IsSizable()) then
+	if self.Sizing then
 		self.Sizing = nil
 		self:MouseCapture(false)
 	end
-
 end
 
 nsgui.trait.Register("resizable", TRAIT)
