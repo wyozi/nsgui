@@ -2,7 +2,7 @@ local PANEL = {}
 
 nsgui.Accessor(PANEL, "_title", "Title")
 nsgui.Accessor(PANEL, "_skin", "Skin")
-nsgui.Accessor(PANEL, "_headertall", "HeaderTall")
+nsgui.Accessor(PANEL, "_icon", "Icon")
 
 function PANEL:Init()
 	self.CloseButton = vgui.Create("NSButton", self)
@@ -16,6 +16,12 @@ function PANEL:Init()
 
 	self:SetDraggable(true)
 	self:SetSizeable(true)
+end
+
+function PANEL:SetIcon ( str )
+	if str then
+		self._icon = Material(str)
+	end
 end
 
 function PANEL:Close()

@@ -87,10 +87,30 @@ function SKIN:FrameCloseButtonBounds(panel, w, h)
 	return w - ( 32 + 4 ), 4, 32, 32
 end
 
-function SKIN:PaintFrame(panel, w, h)
+function SKIN:PaintFrameHeader(panel, w, h)
 	self:DrawBlur(panel, 3, 6, 4, 4, w - 8, 32 )
 	surface.SetDrawColor(0,0,0,200)
 	surface.DrawRect ( 4, 4, w - 8, 32 )
+
+	surface.SetFont"Roboto 16"
+	surface.SetTextColor(255, 255, 255)
+	local textw, texth = surface.GetTextSize(panel:GetTitle())
+
+	if panel:GetIcon() then
+		surface.SetMaterial(panel:GetIcon())
+		surface.SetDrawColor(255, 255, 255)
+		surface.DrawTexturedRect(4+36/2-16/2, 36/2-16/2, 16, 16)
+
+		surface.SetTextPos(16+((2+36/2-16/2)*2), 36/2-texth/2)
+	else
+		surface.SetTextPos((4+36/2-16/2), 36/2-texth/2)
+	end
+	
+	surface.DrawText(panel:GetTitle())
+end
+
+function SKIN:PaintFrame(panel, w, h)
+	self:PaintFrameHeader(panel, w, h )
 
 	surface.SetDrawColor(255,255,255)
 	surface.DrawRect(4, 32 + 4, w - 8, h - 32 - 8)
@@ -171,4 +191,4 @@ function SKIN:PaintCheckbox(panel, w, h)
 	surface.DrawShadow ( 0, 0, w, h, 50 )
 end
 
-nsgui.skin.Register("kool", SKIN)
+nsgui.skin.Register("swift", SKIN)
