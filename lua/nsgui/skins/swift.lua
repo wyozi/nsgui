@@ -170,11 +170,11 @@ function SKIN:PaintButton(panel, w, h)
 	surface.DrawRect ( 2, 2, w - 4, h - 4 )
 
 	surface.SetTextColor ( 255, 255, 255 )
-	surface.SetFont "Roboto 24"
+	surface.SetFont(panel:GetFont() or "Roboto 24")
 
 	local textw, texth = surface.GetTextSize ( panel:GetText() )
 
-	surface.SetTextPos ( w / 2 - textw / 2, h / 2 - texth / 2 + 2 )
+	surface.SetTextPos ( w / 2 - textw / 2, h / 2 - texth / 2 )
 	surface.DrawText ( panel:GetText() )
 end
 

@@ -24,6 +24,7 @@ function nsgui.Example(skin)
 	fr:Center()
 	fr:SetTitle("Hello world")
 	fr:SetIcon("icon16/bomb.png")
+	fr:SetFont("Roboto 16")
 
 	if skin then fr:SetSkin(skin) end
 
