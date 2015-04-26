@@ -23,7 +23,6 @@ function nsgui.Example()
 	fr:SetSize(800, 400)
 	fr:Center()
 	fr:SetTitle("Hello world")
-	fr:SetSkin("swift")
 	fr:SetIcon("icon16/bomb.png")
 
 	local btn = fr:Add("NSButton")

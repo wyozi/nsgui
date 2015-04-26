@@ -28,8 +28,9 @@ function nsgui.skin.Register(id, tbl, parent)
 end
 
 function nsgui.skin.PanelSkin(panel)
-	local skin = panel:GetSkin() or DEFAULT_SKIN
-
+	local skin = panel:GetSkin()
+	if type(skin) == "table" then skin = nil end
+	
 	local skinobj = nsgui.skin.Get(skin)
 	if not skinobj then
 		print("[NSGUI Warning] Skin '" .. skin .. "' not found. Reverting to 'default'")
