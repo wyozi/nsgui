@@ -109,12 +109,23 @@ function SKIN:PaintFrameHeader(panel, w, h)
 	surface.DrawText(panel:GetTitle())
 end
 
+function SKIN:PaintFrameSizableHandle(panel, w, h)
+	surface.SetDrawColor(Color(0,0,0,200))
+
+	local padding = 3
+	surface.DrawLine(w-padding, h-6, w-6, h-padding)
+	surface.DrawLine(w-padding, h-10, w-10, h-padding)
+	surface.DrawLine(w-padding, h-14, w-14, h-padding)
+end
+
 function SKIN:PaintFrame(panel, w, h)
 	self:PaintFrameHeader(panel, w, h )
 
 	surface.SetDrawColor(255,255,255)
 	surface.DrawRect(4, 32 + 4, w - 8, h - 32 - 8)
 	surface.DrawShadow(4, 4, w - 8, h - 8, 4)
+
+	self:PaintFrameSizableHandle(panel, w-4, h-4)
 end
 
 	--
