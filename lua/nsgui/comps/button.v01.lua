@@ -7,7 +7,11 @@ AccessorFunc(PANEL, "_font", "Font")
 
 function PANEL:Init()
 	self:SetMouseInputEnabled(true)
+	
 	self:SetCursor("hand")
+	self:AddHook("OnStateChanged", "SetCursor", function(b)
+		self:SetCursor(b and "hand" or "no")
+	end)
 end
 
 nsgui.skin.HookPaint(PANEL, "PaintButton")

@@ -7,13 +7,14 @@ AccessorFunc(PANEL, "_color", "Color")
 AccessorFunc(PANEL, "_font", "Font")
 
 function PANEL:Init()
-	self:SetCursor("beam")
 	self:SetAllowNonAsciiCharacters(true)
 
 	self:AddHook("OnStateChanged", "DisableInput", function(b)
 		self:SetKeyboardInputEnabled(b)
 		self:SetMouseInputEnabled(b)
 	end)
+
+	self:SetCursor("beam")
 end
 
 function PANEL:SetMultiline(b)

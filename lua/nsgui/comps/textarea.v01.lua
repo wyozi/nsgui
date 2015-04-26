@@ -7,7 +7,6 @@ AccessorFunc(PANEL, "_color", "Color")
 AccessorFunc(PANEL, "_font", "Font")
 
 function PANEL:Init()
-	self:SetCursor("beam")
 	self:SetAllowNonAsciiCharacters(true)
 	self:SetMultiline(true)
 
@@ -15,6 +14,8 @@ function PANEL:Init()
 		self:SetKeyboardInputEnabled(b)
 		self:SetMouseInputEnabled(b)
 	end)
+
+	self:SetCursor("beam")
 end
 
 nsgui.skin.HookPaint(PANEL, "PaintTextEntry", true)
