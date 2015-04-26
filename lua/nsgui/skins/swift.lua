@@ -158,29 +158,31 @@ end
 
 function SKIN:PaintButton(panel, w, h)
 	if ( not panel.btnalpha ) then
-		panel.btnalpha = 200
+		panel.btnalpha = 236
 	end
-
-	surface.SetDrawColor ( 64, 64, 64 )
-	surface.DrawThickOutlinedRect ( 0, 0, w, h, 2 )
 
 	if (panel.Hovered and panel:GetEnabled()) then
 		if panel.Clicked then
 			panel.btnalpha = math.Approach ( panel.btnalpha, 150, FrameTime ( ) * 250 )
 		else
-			panel.btnalpha = math.Approach ( panel.btnalpha, 175, FrameTime ( ) * 250 )
+			panel.btnalpha = math.Approach ( panel.btnalpha, 200, FrameTime ( ) * 250 )
 		end
-		surface.SetDrawColor ( 100, panel.btnalpha, 100 )
-	elseif (not panel:GetEnabled()) then
-		surface.SetDrawColor ( 160, 160, 160 )
 	else
-		panel.btnalpha = math.Approach ( panel.btnalpha, 200, FrameTime ( ) * 250 )
-		surface.SetDrawColor ( 100, panel.btnalpha, 100 )
+		panel.btnalpha = math.Approach ( panel.btnalpha, 236, FrameTime ( ) * 250 )
 	end
 
+	surface.SetDrawColor ( 0, 0, 0, 100+(255-panel.btnalpha) )
+	surface.DrawThickOutlinedRect ( 0, 0, w, h, 2 )
+
+	surface.SetDrawColor ( panel.btnalpha, panel.btnalpha, panel.btnalpha )
 	surface.DrawRect ( 2, 2, w - 4, h - 4 )
 
-	surface.SetTextColor ( 255, 255, 255 )
+	if (not panel:GetEnabled()) then
+		surface.SetTextColor ( 191, 191, 191 )
+	else
+		surface.SetTextColor ( 51, 51, 51 )
+	end
+
 	surface.SetFont(panel:GetFont() or "Roboto 24")
 
 	local textw, texth = surface.GetTextSize ( panel:GetText() )
