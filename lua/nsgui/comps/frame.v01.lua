@@ -18,10 +18,8 @@ function PANEL:Init()
 	self:SetSizeable(true)
 end
 
-function PANEL:SetIcon ( str )
-	if str then
-		self._icon = Material(str)
-	end
+function PANEL:SetIcon(str)
+	self._icon = (str ~= nil) and Material(str) or nil
 end
 
 function PANEL:Close()
