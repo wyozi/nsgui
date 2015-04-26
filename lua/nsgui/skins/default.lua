@@ -12,6 +12,7 @@ SKIN.Color_FrameBackground = Color(255, 255, 255)
 SKIN.Color_FrameOutline = Color(0, 0, 0, 100)
 SKIN.Color_FrameHeaderBackground = Color(32, 32, 32)
 SKIN.Color_FrameHeaderForeground = Color(255, 255, 255)
+SKIN.Color_FrameSizableHandle = Color(127, 127, 127)
 
 function SKIN:PaintFrameBackground(panel, w, h)
 	surface.SetDrawColor(self.Color_FrameBackground)
@@ -33,10 +34,23 @@ function SKIN:PaintFrameCloseButton(panel, w, h)
 	self:PaintButton(panel, w, h)
 end
 
+function SKIN:PaintFrameSizableHandle(panel, w, h)
+	surface.SetDrawColor(self.Color_FrameSizableHandle)
+
+	local padding = 3
+	surface.DrawLine(w-padding, h-6, w-6, h-padding)
+	surface.DrawLine(w-padding, h-10, w-10, h-padding)
+	surface.DrawLine(w-padding, h-14, w-14, h-padding)
+end
+
 function SKIN:PaintFrame(panel, w, h)
 	self:PaintFrameBackground(panel, w, h)
 	self:PaintFrameOutline(panel, w, h)
 	self:PaintFrameHeader(panel, w, h)
+
+	if panel:IsSizable() then
+		self:PaintFrameSizableHandle(panel, w, h)
+	end
 end
 
 SKIN.Color_ButtonBackground = Color(236, 236, 236)
