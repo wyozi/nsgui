@@ -23,7 +23,7 @@ function nsgui.Example()
 	fr:SetSize(800, 400)
 	fr:Center()
 	fr:SetTitle("Hello world")
-	fr:SetSkin("sleek_blur")
+	fr:SetSkin("kool")
 
 	local btn = fr:Add("NSButton")
 	btn:Dock(TOP)
