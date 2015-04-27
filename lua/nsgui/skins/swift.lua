@@ -161,8 +161,8 @@ function SKIN:PaintButton(panel, w, h)
 		panel.btnalpha = 236
 	end
 
-	if (panel.Hovered and panel:GetEnabled()) then
-		if panel.Clicked then
+	if (panel:IsHovered() and panel:GetEnabled()) then
+		if panel:IsDepressed() then
 			panel.btnalpha = math.Approach ( panel.btnalpha, 150, FrameTime ( ) * 250 )
 		else
 			panel.btnalpha = math.Approach ( panel.btnalpha, 200, FrameTime ( ) * 250 )

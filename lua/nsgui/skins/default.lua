@@ -66,7 +66,7 @@ function SKIN:PaintButton(panel, w, h)
 	if not panel:IsEnabled() then
 		bgclr = self.Color_ButtonBackgroundDisabled
 		fgclr = self.Color_ButtonForegroundDisabled
-	elseif panel:IsClicked() then
+	elseif panel:IsDepressed() then
 		local h, s, v = ColorToHSV(bgclr)
 		bgclr = HSVToColor(h, s, math.Clamp(v - 0.1, 0, 1))
 	elseif panel:GetHovered() then
