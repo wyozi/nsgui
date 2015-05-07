@@ -3,8 +3,10 @@
 <head>
 	<title></title>
 	<link rel="stylesheet" type="text/css" href="style.css">
+	<link rel="stylesheet" type="text/css" href="highlight.wiox.css">
 	<style type="text/css">
-		code {
+		pre {
+			height: 600px;
 			max-height: 600px;
 		}
 	</style>
@@ -40,15 +42,13 @@
 		<button class="button highlighted md block" id="selectAll" onclick="javascript:selectAll()">Select all code</button>
 	</div>
 	<div class="col-xl-14 offset-xl-1">
-		<pre>
-			<code class="lua" id="finalcode"></code>
+		<pre id="finalcode">
 		</pre>
 	</div>
 
 	<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 
-	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/styles/default.min.css">
-	<script src="highlight.pack.js"></script>
+	<script type="text/javascript" src="highlight.wiox.js"></script>
 
 	<script type="text/javascript" src="https://cdn.jsdelivr.net/bluebird/latest/bluebird.min.js"></script>
 
@@ -176,7 +176,7 @@
 
 					var el = document.getElementById("finalcode");
 					el.innerHTML = s;
-					hljs.highlightBlock(el);
+					Highlight(el);
 				});
 		}
 

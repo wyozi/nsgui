@@ -1,0 +1,45 @@
+pre {
+    background-color: #333;
+    padding: 8px;
+}
+
+pre .keyword {
+    color: #ADA;
+}
+
+pre .operator,
+pre .identifier {
+    color: #CCC;
+}
+
+pre .function {
+    color: #ACE;    
+}
+
+pre a .function:hover {
+    text-decoration: underline;
+}
+
+pre .string {
+    color: #FFA;
+}
+
+pre .number,
+pre .constant,
+pre .escape {
+    color: #F96;
+}
+
+pre .comment {
+    color: #666;
+}
+
+pre .error {
+    background-color: red;  
+    color: yellow;
+}
+
+
+pre a {
+    text-decoration: none;
+}
