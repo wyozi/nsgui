@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<style type="text/css">
+		body {
+			background-color: #F0F0F0;
+		}
+		#content {
+			width:100%;
+			text-align: center;
+		}
+		h2 {
+			margin-bottom: 4px;
+		}
+		label > span {
+			display: inline-block;
+			width: 170px;
+		}
+
+		.packs > div {
+			float: left;
+			width: 250px;
+			clear: both;
+		}
+
+		pre {
+			margin: auto;
+			width: 80%;
+			text-align: left;
+		}
+		code {
+			height: 600px;
+			max-height: 600px;
+			overflow-y: scroll;
+
+			border: 1px solid black;
+		}
+	</style>
+</head>
+<body>
+	<div id="content">
+		<div class="packs">
+			<div id="comp-packs">
+				<h2>Components</h2>
+				<label><input type="checkbox" comp="base" disabled="disabled" checked="checked"> <span>Base components</span></label><br>
+				<label><input type="checkbox" comp="tree"> <span>Tree</span></label><br>
+			</div>
+			<div id="skin-packs">
+				<h2>Skins</h2>
+				<label><input type="checkbox" skin="base" disabled="disabled" checked="checked"> <span>Default skin</span></label><br>
+				<label><input type="checkbox" skin="swift"> <span>Swift</span></label><br>
+			</div>
+			<div id="trait-packs">
+				<h2>Traits</h2>
+				<label><input type="checkbox" trait="base" disabled="disabled" checked="checked"> <span>Default traits</span></label><br>
+				<label><input type="checkbox" trait="gestures"> <span>Gestures</span></label><br>
+			</div>
+			<div id="opts">
+				<h2>Options</h2>
+				<label><input type="checkbox" id="opt-minify"> <span>Minify code</span></label><br>
+			</div>
+			<div id="stats">
+				<h2>Stats</h2>
+				Code size: <span id="stat-size">0</span>b<br>
+			</div>
+		</div>
+		<br>
+		<pre><code class="lua" id="finalcode"></code></pre><br>
+		<button id="selectAll" onclick="javascript:selectAll()">Select all code</button>
+	</div>
+
+	<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/styles/default.min.css">
+	<script src="highlight.pack.js"></script>
+
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/bluebird/latest/bluebird.min.js"></script>
+
+	<script type="text/javascript" src="luaparse.js"></script>
+	<script type="text/javascript" src="luamin.js"></script>
+	<script type="text/javascript">
+		function selectAll() {
+			var el = document.getElementById("finalcode");
+
+			var range = document.createRange();
+			range.selectNodeContents(el);
+			var sel = window.getSelection();
+			sel.removeAllRanges();
+			sel.addRange(range);
+		}
+
+		var codeCache = {};
+		function fetchContents(path) {
+			var d = Promise.defer();
+
+			var cached = codeCache[path];
+			if (cached) {
+				d.resolve({path: path, code: cached});
+			}
+			else {
+				var xhr = new XMLHttpRequest();
+				xhr.onreadystatechange = function() {
+					if (xhr.readyState == 4) {
+						var json = JSON.parse(xhr.responseText);
+						var decoded = atob(json.content);
+						codeCache[path] = decoded;
+
+						d.resolve({path: path, code: decoded});
+					}
+				}
+				xhr.open("GET", "https://api.github.com/repos/wyozi/nsgui/contents/" + path, true);
+				xhr.send(null);
+			}
+
+			return d.promise;
+		}
+
+		var compPacks = {
+			base: ["frame", "button", "textarea", "textentry"],
+			tree: []
+		};
+		var skinPacks = {
+			base: ["default"],
+			swift: ["swift"]
+		};
+		var traitPacks = {
+			base: ["center", "editable", "gestures", "hooks", "mouseinput", "state"],
+			gestures: ["resizable", "draggable", "gestures"]
+		};
+
+		function refreshCode() {
+			var files = ["lua/nsgui/nsgui.lua", "lua/nsgui/skinbase.lua"];
+
+			$("#comp-packs input[type='checkbox']:checked").each(function() {
+				files = files.concat(compPacks[$(this).attr("comp")].map(function(comp) {
+					return "lua/nsgui/comps/" + comp + ".v01.lua";
+				}));
+			});
+			$("#skin-packs input[type='checkbox']:checked").each(function() {
+				files = files.concat(skinPacks[$(this).attr("skin")].map(function(skin) {
+					return "lua/nsgui/skins/" + skin + ".lua";
+				}));
+			});
+			$("#trait-packs input[type='checkbox']:checked").each(function() {
+				files = files.concat(traitPacks[$(this).attr("trait")].map(function(trait) {
+					return "lua/nsgui/traits/" + trait + ".lua";
+				}));
+			});
+			
+			Promise.all(files.map(fetchContents))
+				.then(function(x) {
+					var s = "";
+					for (var i in x) {
+						var obj = x[i];
+						s += "\n-- File " + obj.path + " \n";
+						s += obj.code;
+					}
+
+					// TODO check if minification is needed
+					var shouldMinify = $("#opt-minify").is(":checked");
+					if (shouldMinify) {
+						s = luamin.minify(s);
+					}
+
+					$("#stat-size").text(s.length);
+
+					var el = document.getElementById("finalcode");
+					el.innerHTML = s;
+					hljs.highlightBlock(el);
+				});
+		}
+		refreshCode();
+
+		$("body").on("click", "input[type='checkbox']", refreshCode);
+	</script>
+</body>
+</html>
