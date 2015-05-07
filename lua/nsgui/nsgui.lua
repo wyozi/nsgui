@@ -30,7 +30,9 @@ end
 
 function nsgui.trait.Import(metapanel, trait)
 	local traitobj = nsgui.trait.Traits[trait]
-	if not traitobj then error("Trying to import nonexistent trait " .. trait) end
+
+	-- TODO should we report this in any way?
+	if not traitobj then return end
 
 	metapanel._ImportedTraits = metapanel._ImportedTraits or {}
 	table.insert(metapanel._ImportedTraits, trait)
