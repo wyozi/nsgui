@@ -1,0 +1,14 @@
+{
+	"comps": {
+		"base": ["frame.v01", "button.v01", "textarea.v01", "textentry.v01"],
+		"tree": []
+	},
+	"skins": {
+		"base": ["default"],
+		"swift": ["swift"]
+	},
+	"traits": {
+		"base": ["center", "editable", "gestures", "hooks", "mouseinput", "state"],
+		"gestures": ["resizable", "draggable", "gestures"]
+	}
+}
