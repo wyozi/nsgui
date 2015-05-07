@@ -1,6 +1,7 @@
 pre {
     background-color: #3c3e4a;
     padding: 8px;
+    border-radius: 4px;
 }
 
 pre .keyword {
