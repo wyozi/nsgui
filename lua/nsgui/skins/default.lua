@@ -114,4 +114,29 @@ function SKIN:PaintTextEntry(panel, w, h)
 	panel:DrawTextEntryText(color, self.Color_TextEntryForegroundHighlighted, color)
 end
 
+function SKIN:PaintTree(panel, w, h)
+	surface.SetDrawColor(0, 0, 0)
+	surface.DrawOutlinedRect(0, 0, w, h)
+end
+
+SKIN.Icon_TreeNodeExpanded = Material("icon16/accept.png")
+SKIN.Icon_TreeNodeCollapsed = Material("icon16/cross.png")
+function SKIN:PaintTreeNode(panel, w, h)
+	local bgclr = self.Color_ButtonBackground
+
+	surface.SetDrawColor(bgclr)
+	surface.DrawRect(0, 0, w, h)
+
+	surface.SetDrawColor(self.Color_ButtonOutline)
+	surface.DrawOutlinedRect(0, 0, w, h)
+
+	draw.SimpleText(panel:GetText(), self.Font, w/2, h/2, self.Color_ButtonForeground, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+
+	surface.SetDrawColor(255, 255, 255)
+	surface.SetMaterial(panel:IsExpanded() and self.Icon_TreeNodeExpanded or self.Icon_TreeNodeCollapsed)
+
+	local yp = h/2 - 16/2
+	surface.DrawTexturedRect(yp, yp, 16, 16)
+end
+
 nsgui.skin.Register("default", SKIN)
