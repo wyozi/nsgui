@@ -2,72 +2,47 @@
 <html>
 <head>
 	<title></title>
+	<link rel="stylesheet" type="text/css" href="style.css">
 	<style type="text/css">
-		body {
-			background-color: #F0F0F0;
-		}
-		#content {
-			width:100%;
-			text-align: center;
-		}
-		h2 {
-			margin-bottom: 4px;
-		}
-		label > span {
-			display: inline-block;
-			width: 170px;
-		}
-
-		.packs > div {
-			float: left;
-			width: 250px;
-			clear: both;
-		}
-
-		pre {
-			margin: auto;
-			width: 80%;
-			text-align: left;
-		}
 		code {
-			height: 600px;
 			max-height: 600px;
-			overflow-y: scroll;
-
-			border: 1px solid black;
 		}
 	</style>
 </head>
 <body>
-	<div id="content">
-		<div class="packs">
-			<div id="comp-packs">
-				<h2>Components</h2>
-				<label><input type="checkbox" comp="base" disabled="disabled" checked="checked"> <span>Base components</span></label><br>
-				<label><input type="checkbox" comp="tree"> <span>Tree</span></label><br>
-			</div>
-			<div id="skin-packs">
-				<h2>Skins</h2>
-				<label><input type="checkbox" skin="base" disabled="disabled" checked="checked"> <span>Default skin</span></label><br>
-				<label><input type="checkbox" skin="swift"> <span>Swift</span></label><br>
-			</div>
-			<div id="trait-packs">
-				<h2>Traits</h2>
-				<label><input type="checkbox" trait="base" disabled="disabled" checked="checked"> <span>Default traits</span></label><br>
-				<label><input type="checkbox" trait="gestures"> <span>Gestures</span></label><br>
-			</div>
-			<div id="opts">
-				<h2>Options</h2>
-				<label><input type="checkbox" id="opt-minify"> <span>Minify code</span></label><br>
-			</div>
-			<div id="stats">
-				<h2>Stats</h2>
-				Code size: <span id="stat-size">0</span>b<br>
-			</div>
+	<div class="col-xl-20 offset-xl-2">
+		<div class="page-title">
+			<h1>NSGui Customizer</h1>
+			<p>A simple way to compress your NSGui installation to a single Lua file.</p>
 		</div>
-		<br>
-		<pre><code class="lua" id="finalcode"></code></pre><br>
-		<button id="selectAll" onclick="javascript:selectAll()">Select all code</button>
+	</div>
+	<div class="col-xl-5 offset-xl-2">
+		<div id="comp-packs">
+			<h2>Components</h2>
+		</div>
+		<div id="skin-packs">
+			<h2>Skins</h2>
+		</div>
+		<div id="trait-packs">
+			<h2>Traits</h2>
+		</div>
+		<div id="opts">
+			<h2>Options</h2>
+			<label>
+				<input type="checkbox" id="opt-minify">
+				<span>Minify code</span>
+			</label>
+		</div>
+		<div id="stats">
+			<h2>Stats</h2>
+			<p>Code size: <span id="stat-size">0</span> bytes</p>
+		</div>
+		<button class="button highlighted md block" id="selectAll" onclick="javascript:selectAll()">Select all code</button>
+	</div>
+	<div class="col-xl-14 offset-xl-1">
+		<pre>
+			<code class="lua" id="finalcode"></code>
+		</pre>
 	</div>
 
 	<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
@@ -99,42 +74,72 @@
 				d.resolve({path: path, code: cached});
 			}
 			else {
-				var xhr = new XMLHttpRequest();
-				xhr.onreadystatechange = function() {
-					if (xhr.readyState == 4) {
-						var json = JSON.parse(xhr.responseText);
+				$.ajax({
+					url: "https://api.github.com/repos/wyozi/nsgui/contents/" + path,
+					crossDomain: true,
+					success: function(json) {
 						var decoded = atob(json.content);
 						codeCache[path] = decoded;
 
 						d.resolve({path: path, code: decoded});
 					}
-				}
-				xhr.open("GET", "https://api.github.com/repos/wyozi/nsgui/contents/" + path, true);
-				xhr.send(null);
+				})
 			}
 
 			return d.promise;
 		}
 
-		var compPacks = {
-			base: ["frame", "button", "textarea", "textentry"],
-			tree: []
-		};
-		var skinPacks = {
-			base: ["default"],
-			swift: ["swift"]
-		};
-		var traitPacks = {
-			base: ["center", "editable", "gestures", "hooks", "mouseinput", "state"],
-			gestures: ["resizable", "draggable", "gestures"]
-		};
+		var compPacks;
+		var skinPacks;
+		var traitPacks;
+
+		fetchContents("compinfo.json").then(function(x) {
+			var obj = JSON.parse(x.code);
+
+			compPacks = {};
+			skinPacks = {};
+			traitPacks = {};
+
+			function addOpt(type, packName, obj) {
+				var input = $("<input>").attr("type", "checkbox").attr(type, packName);
+
+				if (obj["default"]) {
+					input.attr("disabled", "disabled").attr("checked", "checked");
+				}
+
+				var el = $("<label>").append(input).append($("<span>").text(obj.name));
+
+				$("#" + type + "-packs").append(el).append($("<br>"));
+			}
+
+			$.each(obj.comps.groups, function(i, comp) {
+				compPacks[i] = comp.files;
+				addOpt("comp", i, comp);
+			});
+			$.each(obj.skins.groups, function(i, skin) {
+				skinPacks[i] = skin.files;
+				addOpt("skin", i, skin);
+			});
+			$.each(obj.traits.groups, function(i, trait) {
+				traitPacks[i] = trait.files;
+				addOpt("trait", i, trait);
+			});
+
+			refreshCode();
+		});
+
+		function indentate(code, level) {
+			return code.split("\n").map(function(line) {
+				return "\t" + line;
+			}).join("\n");
+		}
 
 		function refreshCode() {
 			var files = ["lua/nsgui/nsgui.lua", "lua/nsgui/skinbase.lua"];
 
 			$("#comp-packs input[type='checkbox']:checked").each(function() {
 				files = files.concat(compPacks[$(this).attr("comp")].map(function(comp) {
-					return "lua/nsgui/comps/" + comp + ".v01.lua";
+					return "lua/nsgui/comps/" + comp + ".lua";
 				}));
 			});
 			$("#skin-packs input[type='checkbox']:checked").each(function() {
@@ -149,16 +154,20 @@
 			});
 			
 			Promise.all(files.map(fetchContents))
-				.then(function(x) {
+				.done(function(x) {
+					var shouldMinify = $("#opt-minify").is(":checked");
+
 					var s = "";
 					for (var i in x) {
 						var obj = x[i];
-						s += "\n-- File " + obj.path + " \n";
-						s += obj.code;
+						s += "-- File " + obj.path + " \ndo\n";
+
+						// We don't want to waste memory if we're gonna nuke all the whitespace anyway
+						s += shouldMinify ? indentate(obj.code) : obj.code;
+
+						s += "\nend\n";
 					}
 
-					// TODO check if minification is needed
-					var shouldMinify = $("#opt-minify").is(":checked");
 					if (shouldMinify) {
 						s = luamin.minify(s);
 					}
@@ -170,7 +179,6 @@
 					hljs.highlightBlock(el);
 				});
 		}
-		refreshCode();
 
 		$("body").on("click", "input[type='checkbox']", refreshCode);
 	</script>
