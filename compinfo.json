@@ -1,14 +1,41 @@
 {
 	"comps": {
-		"base": ["frame.v01", "button.v01", "textarea.v01", "textentry.v01"],
-		"tree": []
+		"groups": {
+			"base": {
+				"name": "Basic components",
+				"default": true,
+				"files": ["frame.v01", "button.v01", "textarea.v01", "textentry.v01"]
+			},
+			"tree": {
+				"name": "Tree component",
+				"files": []
+			}
+		}
 	},
 	"skins": {
-		"base": ["default"],
-		"swift": ["swift"]
+		"groups": {
+			"base": {
+				"name": "Default skin",
+				"default": true,
+				"files": ["default"]
+			},
+			"swift": {
+				"name": "Swift",
+				"files": ["swift"]
+			}
+		}
 	},
 	"traits": {
-		"base": ["center", "editable", "gestures", "hooks", "mouseinput", "state"],
-		"gestures": ["resizable", "draggable", "gestures"]
+		"groups": {
+			"base": {
+				"name": "Default traits",
+				"default": true,
+				"files": ["center", "editable", "gestures", "hooks", "mouseinput", "state"]
+			},
+			"gestures": {
+				"name": "Gestures",
+				"files": ["resizable", "draggable", "gestures"]
+			}
+		}
 	}
 }
