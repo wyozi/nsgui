@@ -27,42 +27,34 @@ function nsgui.Example(skin)
 
 	if skin then fr:SetSkin(skin) end
 
-	local btn = fr:Add("NSButton")
-	btn:SetPos(10, 40)
-	btn:SetSize(250, 30)
-	btn:SetText("Click me!")
-	btn:SetFont("Roboto 16")
-	btn.DoClick = function() chat.AddText("Clicked!") end
+	local function createComp(cls, x, y, w, h, fn)
+		local comp = fr:Add(cls)
+		comp:SetPos(x, y)
+		comp:SetSize(w, h)
+		fn(comp)
 
-	local disabledbtn = fr:Add("NSButton")
-	disabledbtn:SetPos(270, 40)
-	disabledbtn:SetSize(250, 30)
-	disabledbtn:SetText("Click me!")
-	disabledbtn:SetFont("Roboto 16")
-	disabledbtn:SetEnabled(false)
-	disabledbtn.DoClick = function() chat.AddText("Clicked!") end
+		-- Can't be disabled, abort
+		if not comp.SetEnabled then return end
 
-	local textentry = fr:Add("NSTextEntry")
-	textentry:SetPos(10, 80)
-	textentry:SetSize(250, 30)
-	textentry:SetText("Hello world")
+		local disabledcomp = fr:Add(cls)
+		disabledcomp:SetPos(x + w + 10, y)
+		disabledcomp:SetSize(w, h)
+		disabledcomp:SetEnabled(false)
+		fn(disabledcomp)
+	end
 
-	local disabledtextentry = fr:Add("NSTextEntry")
-	disabledtextentry:SetPos(270, 80)
-	disabledtextentry:SetSize(250, 30)
-	disabledtextentry:SetEnabled(false)
-	disabledtextentry:SetText("Hello world")
+	createComp("NSButton", 10, 40, 250, 30, function(comp)
+		comp:SetText("Click me!")
+		comp.DoClick = function() chat.AddText("Clicked!") end
+	end)
 
-	local textarea = fr:Add("NSTextArea")
-	textarea:SetPos(10, 120)
-	textarea:SetSize(250, 90)
-	textarea:SetText("Lorem\nIpsum")
+	createComp("NSTextEntry", 10, 80, 250, 30, function(comp)
+		comp:SetText("Hello world")
+	end)
 
-	local disabledtextarea = fr:Add("NSTextArea")
-	disabledtextarea:SetPos(270, 120)
-	disabledtextarea:SetSize(250, 90)
-	disabledtextarea:SetEnabled(false)
-	disabledtextarea:SetText("Lorem\nIpsum")
+	createComp("NSTextArea", 10, 120, 250, 90, function(comp)
+		comp:SetText("Lorem\nIpsum")
+	end)
 
 	fr:MakePopup()
 end
