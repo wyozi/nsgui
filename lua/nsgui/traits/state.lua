@@ -9,4 +9,9 @@ function TRAIT:SetEnabled(b)
 	self:CallHook("OnStateChanged", b)
 end
 
+-- Legacy support
+function TRAIT:SetDisabled(b)
+	self:SetEnabled(not b)
+end
+
 nsgui.trait.Register("state", TRAIT)
