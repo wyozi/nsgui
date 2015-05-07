@@ -20,7 +20,7 @@ if SERVER then return end
 
 function nsgui.Example(skin)
 	local fr = vgui.Create("NSFrame")
-	fr:SetSize(800, 400)
+	fr:SetSize(530, 500)
 	fr:Center()
 	fr:SetTitle("Hello world")
 	fr:SetIcon("icon16/bomb.png")
