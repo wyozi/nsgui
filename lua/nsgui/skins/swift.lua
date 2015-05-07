@@ -175,7 +175,7 @@ function SKIN:PaintButton(panel, w, h)
 	surface.DrawThickOutlinedRect ( 0, 0, w, h, 2 )
 
 	surface.SetDrawColor ( panel.btnalpha, panel.btnalpha, panel.btnalpha )
-	surface.DrawRect ( 2, 2, w - 4, h - 4 )
+	surface.DrawRect ( 1, 1, w - 2, h - 2 )
 
 	if (not panel:GetEnabled()) then
 		surface.SetTextColor ( 191, 191, 191 )
