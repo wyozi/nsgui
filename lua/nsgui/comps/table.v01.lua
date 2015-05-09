@@ -216,6 +216,11 @@ function PANEL:GridRow()
 end
 
 function PANEL:Add(comp)
+	-- Create null component
+	if not comp then
+		comp = vgui.Create("Panel")
+	end
+
 	local row = self:GridRow()
 
 	local rowi, coli = self:RowId(), #row+1
