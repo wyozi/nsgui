@@ -164,8 +164,13 @@ function PANEL:Center()
 	self._internalCell:Center() return self
 end
 
+function PANEL:SetPadding(x)
+	self._internalCell:SetPadding(x) return self
+end
+-- TODO individual paddings
+
 function PANEL:GetRow(i)
-	return self._rows[i]
+	return self._rows[i or self:RowId()]
 end
 function PANEL:GetCol(i)
 	return self._cols[i]
@@ -237,8 +242,6 @@ end
 -- This computes each row and column object's size.
 -- This method should be called if any components or the table changes size
 function PANEL:ComputeSizes()
-	local w, h = self:GetWide(), self:GetTall()
-
 	-- First compute non-expanded sizes and store expanded statuses
 	for c=1, self:ColCount() do
 		local col = self._cols[c]
@@ -283,7 +286,9 @@ function PANEL:ComputeSizes()
 
 	-- Then compute equal shares for expanded cols/rows
 
-	local expandSpaceX, expandSpaceY = w, h -- the space available for expanding
+
+	local ix1, iy1, ix2, iy2 = self:InternalBounds()
+	local expandSpaceX, expandSpaceY = ix2-ix1, iy2-iy1 -- the space available for expanding
 	local expandNumX, expandNumY = 0, 0 -- the number of expanders per dimension
 
 	for c=1, self:ColCount() do
@@ -329,6 +334,20 @@ function PANEL:ComputeSizes()
 	end
 end
 
+-- Returns bounds decreased by paddings
+function PANEL:InternalBounds()
+	local x1, y1, x2, y2 = 0, 0, self:GetWide(), self:GetTall()
+
+	x1 = x1 + (self._internalCell:GetPaddingLeft() or 0)
+	y1 = y1 + (self._internalCell:GetPaddingTop() or 0)
+
+	x2 = x2 - (self._internalCell:GetPaddingRight() or 0)
+	y2 = y2 - (self._internalCell:GetPaddingBottom() or 0)
+
+	return x1, y1, x2, y2
+end
+
+-- Compute the size of the logical table
 function PANEL:ComputeLogicalSize()
 	local logicalWidth, logicalHeight = 0, 0
 	for c=1, self:ColCount() do
@@ -341,13 +360,13 @@ function PANEL:ComputeLogicalSize()
 end
 
 function PANEL:ComputeLogicalXY()
-	local w, h = self:GetWide(), self:GetTall()
+	local ix, iy, ix2, iy2 = self:InternalBounds()
 	local logicalWidth, logicalHeight = self:ComputeLogicalSize()
 
 	local logicalAlignX, logicalAlignY = self._internalCell:GetAlignmentFractions()
-	local logicalMidX, logicalMidY = Lerp(logicalAlignX, 0, w), Lerp(logicalAlignY, 0, h)
-	local xStart, yStart = math.Clamp(logicalMidX-logicalWidth/2, 0, w-logicalWidth),
-						   math.Clamp(logicalMidY-logicalHeight/2, 0, h-logicalHeight)
+	local logicalMidX, logicalMidY = Lerp(logicalAlignX, ix, ix2), Lerp(logicalAlignY, iy, iy2)
+	local xStart, yStart = math.Clamp(logicalMidX-logicalWidth/2, ix, ix2-logicalWidth),
+						   math.Clamp(logicalMidY-logicalHeight/2, iy, iy2-logicalHeight)
 
 	return xStart, yStart
 end
@@ -356,12 +375,11 @@ end
 function PANEL:ForEachCell(eachCell, after)
 	local param = {} -- save some memory
 
-	local w, h = self:GetWide(), self:GetTall()
+	local ix, iy, ix2, iy2 = self:InternalBounds()
 	local logicalWidth, logicalHeight = self:ComputeLogicalSize()
 	local xStart, yStart = self:ComputeLogicalXY()
 
-	param.w = w
-	param.h = h
+	param.ix, param.iy, param.ix2, param.iy2 = ix, iy, ix2, iy2
 	param.logicalWidth = logicalWidth
 	param.logicalHeight = logicalHeight
 	param.xStart = xStart
@@ -478,8 +496,13 @@ function PANEL:PaintOver()
 		surface.SetDrawColor(255, 0, 0)
 		surface.DrawOutlinedRect(data.cellx, data.celly, data.cellw, data.cellh)
 	end, function(data)
+		-- Draw logical table
 		surface.SetDrawColor(255, 127, 0)
 		surface.DrawOutlinedRect(data.xStart, data.yStart, data.logicalWidth, data.logicalHeight)
+
+		-- Draw internal cell
+		surface.SetDrawColor(0, 127, 255)
+		surface.DrawOutlinedRect(data.ix, data.iy, data.ix2-data.ix, data.iy2-data.iy)
 	end)
 end
 
