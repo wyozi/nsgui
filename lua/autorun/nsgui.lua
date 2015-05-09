@@ -58,7 +58,7 @@ function nsgui.Example(skin)
 			tbl:Add(vgui.Create("DPanel"))
 		end
 
-		tbl:Row()
+		tbl:Row():SetMarginTop(10)
 	end
 
 	createComp("NSButton", 10, 40, 250, 30, function(comp)

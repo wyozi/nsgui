@@ -41,6 +41,8 @@ function GridDim:Reset()
 end
 
 local Row = Class("Row", GridDim)
+nsgui.Accessor(Row, "_marginTop", "MarginTop")
+nsgui.Accessor(Row, "_marginBottom", "MarginBottom")
 local Column = Class("Column", GridDim)
 
 local A_TOP =    bit.lshift(1, 1)
@@ -372,6 +374,8 @@ function PANEL:ForEachCell(eachCell, after)
 
 		param.row = row
 		param.rowSize = rowSize
+
+		y = y + (row:GetMarginTop() or 0)
 		param.y = y
 
 		local rowcols = self._grid[r]
@@ -440,7 +444,7 @@ function PANEL:ForEachCell(eachCell, after)
 			x = x + colSize
 		end
 
-		y = y + rowSize
+		y = y + rowSize + (row:GetMarginBottom() or 0)
 	end
 
 	if after then
