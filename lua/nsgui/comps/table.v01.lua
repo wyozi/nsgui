@@ -43,7 +43,13 @@ end
 local Row = Class("Row", GridDim)
 local Column = Class("Column", GridDim)
 
+local A_TOP =    bit.lshift(1, 1)
+local A_BOTTOM = bit.lshift(1, 2)
+local A_LEFT =   bit.lshift(1, 3)
+local A_RIGHT =  bit.lshift(1, 4)
+
 local Cell = Class("Cell")
+nsgui.Accessor(Cell, "_align", "Alignment")
 nsgui.Accessor(Cell, "_expandedX", "ExpandedX")
 nsgui.Accessor(Cell, "_expandedY", "ExpandedY")
 nsgui.Accessor(Cell, "_filledX", "FilledX")
@@ -56,6 +62,7 @@ nsgui.Accessor(Cell, "_paddingR", "PaddingRight")
 nsgui.Accessor(Cell, "_paddingB", "PaddingBottom")
 function Cell:initialize(comp)
 	self.comp = comp
+	self:Center()
 end
 function Cell:GetComponent() return self.comp end
 --- Returns the size the cell wants to be. ((specifiedSize or comp.size) + margins + paddings)
@@ -66,16 +73,58 @@ function Cell:GetPreferredCellSize()
 	return w, h
 end
 function Cell:SetPadding(x)
-	self:SetPaddingLeft(x) self:SetPaddingTop(x) self:SetPaddingRight(x) self:SetPaddingBottom(x)
-	return self
+	self:SetPaddingLeft(x) self:SetPaddingTop(x) self:SetPaddingRight(x) self:SetPaddingBottom(x) return self
 end
 function Cell:Expand()
-	self:SetExpandedX(true) self:SetExpandedY(true)
-	return self
+	self:SetExpandedX(true) self:SetExpandedY(true) return self
 end
 function Cell:Fill()
-	self:SetFilledX(true) self:SetFilledY(true)
+	self:SetFilledX(true) self:SetFilledY(true) return self
+end
+function Cell:_SetAlignment(x, contradicting)
+	local a = self:GetAlignment()
+	a = bit.bor(a, x)
+	a = bit.band(a, bit.bnot(contradicting))
+	self:SetAlignment(a)
 	return self
+end
+function Cell:Top()
+	return self:_SetAlignment(A_TOP, A_BOTTOM)
+end
+function Cell:Bottom()
+	return self:_SetAlignment(A_BOTTOM, A_TOP)
+end
+function Cell:Right()
+	return self:_SetAlignment(A_RIGHT, A_LEFT)
+end
+function Cell:Left()
+	return self:_SetAlignment(A_LEFT, A_RIGHT)
+end
+function Cell:Center()
+	-- Garry, add lua operators please
+	self:SetAlignment(A_TOP + A_BOTTOM + A_LEFT + A_RIGHT) return self
+end
+
+function Cell:GetAlignmentFractions()
+	local alignment = self:GetAlignment()
+
+	local alignx, aligny = 0.5, 0.5
+
+	if bit.band(alignment, A_LEFT) ~= 0 and bit.band(alignment, A_RIGHT) == 0 then
+		alignx = 0
+	end
+	if bit.band(alignment, A_RIGHT) ~= 0 and bit.band(alignment, A_LEFT) == 0 then
+		alignx = 1
+	end
+
+	if bit.band(alignment, A_TOP) ~= 0 and bit.band(alignment, A_BOTTOM) == 0 then
+		aligny = 0
+	end
+	if bit.band(alignment, A_BOTTOM) ~= 0 and bit.band(alignment, A_TOP) == 0 then
+		aligny = 1
+	end
+
+	return alignx, aligny
 end
 
 local PANEL = {}
@@ -261,19 +310,32 @@ function PANEL:PerformLayout()
 			local cell = self._grid[r][c]
 			local comp = cell:GetComponent()
 
+			-- The absolute cell corner values
 			local cellx, celly, cellw, cellh = xStart + x, yStart + y, colSize, rowSize
-			local icellx, icelly = cellx + (cell:GetPaddingLeft() or 0), celly + (cell:GetPaddingTop() or 0)
+
+			-- The internal (affected by padding) cell values
+			local icellx1, icelly1 = cellx + (cell:GetPaddingLeft() or 0), celly + (cell:GetPaddingTop() or 0)
+			local icellx2, icelly2 = cellx + cellw - (cell:GetPaddingRight() or 0), celly + cellh - (cell:GetPaddingBottom() or 0)
 
 			if cell:GetFilledX() then
-				comp:SetWide(cellw - (cell:GetPaddingLeft() or 0) - (cell:GetPaddingRight() or 0))
+				comp:SetWide(icellx2 - icellx1)
 			end
 			if cell:GetFilledY() then
-				comp:SetTall(cellh - (cell:GetPaddingTop() or 0) - (cell:GetPaddingBottom() or 0))
+				comp:SetTall(icelly2 - icelly1)
 			end
 
 			local compw, comph = comp:GetWide(), comp:GetTall()
 
-			comp:SetPos(cellx + cellw/2 - compw/2, celly + cellh/2 - comph/2)
+			-- Map normalized alignment values to internal cell's coordinates
+			local alignx, aligny = cell:GetAlignmentFractions()
+			local midX, midY = Lerp(alignx, icellx1, icellx2), Lerp(aligny, icelly1, icelly2)
+
+			-- Clamp mid values.
+			-- If this part is skipped, components will "overflow" by 50%, because alignx/aligny
+			-- are normalized scalar values for comp's middle position, not edge position
+			local compx, compy = math.Clamp(midX-compw/2, icellx1, icellx2-compw), math.Clamp(midY-comph/2, icelly1, icelly2-comph)
+
+			comp:SetPos(compx, compy)
 
 			x = x + colSize
 		end
@@ -304,11 +366,22 @@ function PANEL:PaintOver()
 			local comp = cell:GetComponent()
 
 			local cellx, celly, cellw, cellh = xStart + x, yStart + y, colSize, rowSize
+			local icellx1, icelly1 = cellx + (cell:GetPaddingLeft() or 0), celly + (cell:GetPaddingTop() or 0)
+			local icellx2, icelly2 = cellx + cellw - (cell:GetPaddingRight() or 0), celly + cellh - (cell:GetPaddingBottom() or 0)
 			local compw, comph = comp:GetWide(), comp:GetTall()
+
+			local alignx, aligny = cell:GetAlignmentFractions()
+			local midX, midY = Lerp(alignx, icellx1, icellx2), Lerp(aligny, icelly1, icelly2)
+
+			local compx, compy = math.Clamp(midX-compw/2, icellx1, icellx2-compw), math.Clamp(midY-comph/2, icelly1, icelly2-comph)
 
 			-- Draw component
 			surface.SetDrawColor(0, 255, 0)
-			surface.DrawOutlinedRect(cellx + cellw/2 - compw/2, celly + cellh/2 - comph/2, compw, comph)
+			surface.DrawOutlinedRect(compx, compy, compw, comph)
+
+			-- Draw inner cell
+			surface.SetDrawColor(0, 0, 255)
+			surface.DrawOutlinedRect(icellx1, icelly1, icellx2-icellx1, icelly2-icelly1)
 
 			-- Draw cell
 			surface.SetDrawColor(255, 0, 0)
@@ -339,12 +412,12 @@ concommand.Add("nsgui.TestTable", function()
 		return l
 	end
 
-	comp:Add(Label("Hello")):SetExpandedX(true)
-	comp:Add(Label("World"))
+	comp:Add(Label("Hello")):SetExpandedX(true):Right():Bottom()
+	comp:Add(Label("World")):SetPadding(5):Left()
 	comp:Row()
 
 	comp:Add(Label("What's")):Fill():SetPadding(10)
-	comp:Add(Label(string.rep("swag", 3))):SetExpandedY(true)
+	comp:Add(Label(string.rep("swag", 3))):SetPadding(5):SetExpandedY(true):Top()
 
 	comp:SetDebugMode(true)
 end)
