@@ -18,6 +18,20 @@ AddLUA("nsgui/comps")
 
 if SERVER then return end
 
+function nsgui.TestComp(compName)
+	local fr = vgui.Create("NSFrame")
+	fr:SetSize(530, 500)
+	fr:Center()
+	fr:SetTitle("Component demonstration: " .. compName)
+
+	local comp = fr:Add(compName)
+	comp:Dock(FILL)
+
+	fr:MakePopup()
+
+	return comp
+end
+
 function nsgui.Example(skin)
 	local fr = vgui.Create("NSFrame")
 	fr:SetSize(530, 500)
