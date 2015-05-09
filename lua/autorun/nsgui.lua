@@ -27,6 +27,9 @@ function nsgui.TestComp(compName)
 	local comp = fr:Add(compName)
 	comp:Dock(FILL)
 
+	-- This is needed for resizing to still work
+	comp:DockMargin(0, 0, 10, 10)
+
 	fr:MakePopup()
 
 	return comp
@@ -43,7 +46,11 @@ function nsgui.Example(skin)
 
 	local tbl = fr:Add("NSTable")
 	tbl:Dock(FILL)
-	tbl:Top()
+
+	-- This is needed for resizing to still work
+	tbl:DockMargin(0, 0, 10, 10)
+
+	tbl:Top():SetPadding(15)
 
 	local function createComp(cls, x, y, w, h, fn)
 		local cell = tbl:Add(vgui.Create(cls)):SetExpandedX(true):Fill():SetHeight(h)

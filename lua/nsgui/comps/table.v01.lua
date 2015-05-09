@@ -524,10 +524,36 @@ concommand.Add("nsgui.TestTable", function(ply, cmd, args)
 		l:SetTextColor(Color(0, 0, 0))
 		return l
 	end
+	local function Button(txt)
+		local l = vgui.Create("NSButton")
+		l:SetText(txt)
+		l:SizeToContents()
+		return l
+	end
+	local le
+	local function Entry()
+		le = vgui.Create("NSTextEntry")
+		return le
+	end
+	local function Validator(fn)
+		local val = vgui.Create("DImage")
+
+		local entry = le
+		val.Think = function(pself)
+			local validated = fn(entry:GetText())
+			pself:SetImage(validated and "icon16/accept.png" or "icon16/cross.png")
+		end
+
+		val:SetSize(16, 16)
+
+		return val
+	end
 
 	local testidx = args[1]
 
 	if testidx == "colspan" then
+		comp:SetPadding(50)
+
 		comp:Add(Label("Row1Col1"))
 		comp:Add(Label("Row1Col2"))
 		comp:Add(Label("Row1Col3"))
@@ -543,8 +569,29 @@ concommand.Add("nsgui.TestTable", function(ply, cmd, args)
 		comp:Add(Label("Row3Col2"))
 		comp:Add(Label("Row3Col3"))
 		comp:Add(Label("Row3Col4"))
+	elseif testidx == "plylist" then
+		comp:SetPadding(10)
+		comp:Top()
+
+		comp:Add(Label("Name:")):SetWidth(100)
+		comp:Add(Entry()):Fill():SetExpandedX(true)
+		comp:Add(Validator(function(txt) return string.len(txt) >= 3 end)):SetWidth(25)
+		comp:Row():SetMarginTop(10)
+
+		comp:Add(Label("Age:"))
+		comp:Add(Entry()):Fill()
+		comp:Add(Validator(function(txt) return string.match(txt, "%d+") end))
+		comp:Row():SetMarginTop(10)
+
+		comp:Add(Label("Color:"))
+		local clr = vgui.Create("DColorCombo")
+		comp:Add(clr):Fill():SetHeight(200):SetColspan(2)
+		comp:Row():SetMarginTop(10)
+
+		comp:Add(Button("Accept")):SetFilledX(true)
+		comp:Add():SetColspan(2)
 	else
-		comp:Right()
+		comp:Right():SetPadding(50)
 
 		comp:Add(Label("Hello")):Right():Bottom():SetPaddingBottom(15):SetPaddingRight(100)
 		comp:Add(Label("World")):SetPadding(5):Left()
