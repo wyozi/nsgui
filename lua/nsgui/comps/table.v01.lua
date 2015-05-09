@@ -272,8 +272,9 @@ function PANEL:ComputeSizes()
 
 			row:SetSize(math.max(row:GetSize(), ch))
 
-			-- Divide space evenly for each colspanned col
-			cw = cw / colspan
+			-- If we need to use colspan, we shouldnt be the ones deciding column sizes and instead delegate
+			-- that to other rows. TODO this might be incorrect behavior in some situations?
+			if colspan > 1 then cw = 0 end
 
 			-- Set size/expand status for each col independently
 			for cs=0, colspan-1 do
