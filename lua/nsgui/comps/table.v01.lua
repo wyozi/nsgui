@@ -46,6 +46,8 @@ local Column = Class("Column", GridDim)
 local Cell = Class("Cell")
 nsgui.Accessor(Cell, "_expandedX", "ExpandedX")
 nsgui.Accessor(Cell, "_expandedY", "ExpandedY")
+nsgui.Accessor(Cell, "_filledX", "FilledX")
+nsgui.Accessor(Cell, "_filledY", "FilledY")
 nsgui.Accessor(Cell, "_width", "Width")
 nsgui.Accessor(Cell, "_height", "Height")
 nsgui.Accessor(Cell, "_paddingL", "PaddingLeft")
@@ -65,6 +67,14 @@ function Cell:GetPreferredCellSize()
 end
 function Cell:SetPadding(x)
 	self:SetPaddingLeft(x) self:SetPaddingTop(x) self:SetPaddingRight(x) self:SetPaddingBottom(x)
+	return self
+end
+function Cell:Expand()
+	self:SetExpandedX(true) self:SetExpandedY(true)
+	return self
+end
+function Cell:Fill()
+	self:SetFilledX(true) self:SetFilledY(true)
 	return self
 end
 
@@ -252,6 +262,14 @@ function PANEL:PerformLayout()
 			local comp = cell:GetComponent()
 
 			local cellx, celly, cellw, cellh = xStart + x, yStart + y, colSize, rowSize
+
+			if cell:GetFilledX() then
+				comp:SetWide(cellw)
+			end
+			if cell:GetFilledY() then
+				comp:SetTall(cellh)
+			end
+
 			local compw, comph = comp:GetWide(), comp:GetTall()
 
 			comp:SetPos(cellx + cellw/2 - compw/2, celly + cellh/2 - comph/2)
@@ -324,7 +342,7 @@ concommand.Add("nsgui.TestTable", function()
 	comp:Add(Label("World"))
 	comp:Row()
 
-	comp:Add(Label("What's"))
+	comp:Add(Label("What's")):Fill()
 	comp:Add(Label(string.rep("swag", 3))):SetPadding(10):SetExpandedY(true)
 
 	comp:SetDebugMode(true)
