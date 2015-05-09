@@ -56,6 +56,16 @@ function nsgui.Example(skin)
 		comp:SetText("Lorem\nIpsum")
 	end)
 
+	createComp("NSConsole", 10, 220, 250, 90, function(comp)
+		local text = ("Hello world. I am a simple node")
+		local t = {}
+		for w in string.gmatch(text, "(%w+)") do t[#t+1] = w end
+
+		for i=1, 1 do
+			comp:AddTextNode(unpack(t))
+		end
+	end)
+
 	fr:MakePopup()
 end
 

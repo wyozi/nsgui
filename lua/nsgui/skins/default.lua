@@ -114,4 +114,9 @@ function SKIN:PaintTextEntry(panel, w, h)
 	panel:DrawTextEntryText(color, self.Color_TextEntryForegroundHighlighted, color)
 end
 
+function SKIN:PaintConsole(panel, w, h)
+	surface.SetDrawColor(self.Color_TextEntryOutline)
+	surface.DrawOutlinedRect(0, 0, w, h)
+end
+
 nsgui.skin.Register("default", SKIN)
