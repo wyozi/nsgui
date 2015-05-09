@@ -133,8 +133,6 @@ local PANEL = {}
 nsgui.Accessor(PANEL, "_debugMode", "DebugMode", FORCE_BOOL)
 
 function PANEL:Init()
-	self:SetMouseInputEnabled(false)
-
 	-- Internal cell is used for doing stuff with the logical table
 	-- It should not be accessed directly, but through exposed methods
 	self._internalCell = Cell(self)

@@ -41,20 +41,24 @@ function nsgui.Example(skin)
 
 	if skin then fr:SetSkin(skin) end
 
+	local tbl = fr:Add("NSTable")
+	tbl:Dock(FILL)
+	tbl:Top()
+
 	local function createComp(cls, x, y, w, h, fn)
-		local comp = fr:Add(cls)
-		comp:SetPos(x, y)
-		comp:SetSize(w, h)
-		fn(comp)
+		local cell = tbl:Add(vgui.Create(cls)):SetExpandedX(true):Fill():SetHeight(h)
+		fn(cell:GetComponent())
 
-		-- Can't be disabled, abort
-		if not comp.SetEnabled then return end
+		if cell:GetComponent().SetEnabled then
+			local disabledcell = tbl:Add(vgui.Create(cls)):SetExpandedX(true):Fill():SetHeight(h)
+			disabledcell:GetComponent():SetEnabled(false)
+			fn(disabledcell:GetComponent())
+		else
+			-- Add null cell
+			tbl:Add(vgui.Create("DPanel"))
+		end
 
-		local disabledcomp = fr:Add(cls)
-		disabledcomp:SetPos(x + w + 10, y)
-		disabledcomp:SetSize(w, h)
-		disabledcomp:SetEnabled(false)
-		fn(disabledcomp)
+		tbl:Row()
 	end
 
 	createComp("NSButton", 10, 40, 250, 30, function(comp)
