@@ -321,117 +321,121 @@ function PANEL:ComputeLogicalXY()
 	return xStart, yStart
 end
 
-function PANEL:PerformLayout()
-	self:ComputeSizes()
+function PANEL:ForEachCell(eachCell, after)
+	local param = {} -- save some memory
 
 	local w, h = self:GetWide(), self:GetTall()
 	local logicalWidth, logicalHeight = self:ComputeLogicalSize()
 	local xStart, yStart = self:ComputeLogicalXY()
+
+	param.w = w
+	param.h = h
+	param.logicalWidth = logicalWidth
+	param.logicalHeight = logicalHeight
+	param.xStart = xStart
+	param.yStart = yStart
 
 	local y = 0
 	for r=1, self:RowCount() do
 		local row = self._rows[r]
 		local rowSize = row:GetSize()
 
+		param.row = row
+		param.rowSize = rowSize
+		param.y = y
+
 		local x = 0
+
 		for c=1, self:ColCount() do
+			param.x = x
+
 			local col = self._cols[c]
 			local colSize = col:GetSize()
+			param.col, param.colSize = col, colSize
 
 			local cell = self._grid[r][c]
 			local comp = cell:GetComponent()
+			param.cell, param.comp = cell, comp
 
 			-- The absolute cell corner values
 			local cellx, celly, cellw, cellh = xStart + x, yStart + y, colSize, rowSize
+			param.cellx, param.celly, param.cellw, param.cellh = cellx, celly, cellw, cellh
 
 			-- The internal (affected by padding) cell values
 			local icellx1, icelly1 = cellx + (cell:GetPaddingLeft() or 0), celly + (cell:GetPaddingTop() or 0)
+			param.icellx1, param.icelly1 = icellx1, icelly1
 			local icellx2, icelly2 = cellx + cellw - (cell:GetPaddingRight() or 0), celly + cellh - (cell:GetPaddingBottom() or 0)
-
-			if cell:GetFilledX() then
-				comp:SetWide(icellx2 - icellx1)
-			end
-			if cell:GetFilledY() then
-				comp:SetTall(icelly2 - icelly1)
-			end
+			param.icellx2, param.icelly2 = icellx2, icelly2
 
 			local compw, comph = comp:GetWide(), comp:GetTall()
+			if cell:GetFilledX() then
+				compw = (icellx2 - icellx1)
+			end
+			if cell:GetFilledY() then
+				comph = (icelly2 - icelly1)
+			end
+			param.compW, param.compH = compw, comph
 
 			-- Map normalized alignment values to internal cell's coordinates
 			local alignx, aligny = cell:GetAlignmentFractions()
 			local midX, midY = Lerp(alignx, icellx1, icellx2), Lerp(aligny, icelly1, icelly2)
+			param.midX, param.midY = midX, midY
 
 			-- Clamp mid values.
 			-- If this part is skipped, components will "overflow" by 50%, because alignx/aligny
 			-- are normalized scalar values for comp's middle position, not edge position
 			local compx, compy = math.Clamp(midX-compw/2, icellx1, icellx2-compw), math.Clamp(midY-comph/2, icelly1, icelly2-comph)
+			param.compX, param.compY = compx, compy
 
-			comp:SetPos(compx, compy)
+			if eachCell then
+				eachCell(param)
+			end
 
 			x = x + colSize
 		end
 
 		y = y + rowSize
 	end
+
+	if after then
+		after(param)
+	end
+end
+
+function PANEL:PerformLayout()
+	self:ComputeSizes()
+
+	self:ForEachCell(function(data)
+		data.comp:SetPos(data.compX, data.compY)
+		data.comp:SetSize(data.compW, data.compH)
+	end)
 end
 
 function PANEL:PaintOver()
 	if not self:IsDebugMode() then return end
 
-	local w, h = self:GetWide(), self:GetTall()
 
-	local logicalWidth, logicalHeight = self:ComputeLogicalSize()
-	local xStart, yStart = self:ComputeLogicalXY()
+	self:ForEachCell(function(data)
+		-- Draw component
+		surface.SetDrawColor(0, 255, 0)
+		surface.DrawOutlinedRect(data.compX, data.compY, data.compW, data.compH)
 
-	local y = 0
-	for r=1, self:RowCount() do
-		local row = self._rows[r]
-		local rowSize = row:GetSize()
+		-- Draw inner cell
+		surface.SetDrawColor(0, 0, 255)
+		surface.DrawOutlinedRect(data.icellx1, data.icelly1, data.icellx2-data.icellx1, data.icelly2-data.icelly1)
 
-		local x = 0
-		for c=1, self:ColCount() do
-			local col = self._cols[c]
-			local colSize = col:GetSize()
-
-			local cell = self._grid[r][c]
-			local comp = cell:GetComponent()
-
-			local cellx, celly, cellw, cellh = xStart + x, yStart + y, colSize, rowSize
-			local icellx1, icelly1 = cellx + (cell:GetPaddingLeft() or 0), celly + (cell:GetPaddingTop() or 0)
-			local icellx2, icelly2 = cellx + cellw - (cell:GetPaddingRight() or 0), celly + cellh - (cell:GetPaddingBottom() or 0)
-			local compw, comph = comp:GetWide(), comp:GetTall()
-
-			local alignx, aligny = cell:GetAlignmentFractions()
-			local midX, midY = Lerp(alignx, icellx1, icellx2), Lerp(aligny, icelly1, icelly2)
-
-			local compx, compy = math.Clamp(midX-compw/2, icellx1, icellx2-compw), math.Clamp(midY-comph/2, icelly1, icelly2-comph)
-
-			-- Draw component
-			surface.SetDrawColor(0, 255, 0)
-			surface.DrawOutlinedRect(compx, compy, compw, comph)
-
-			-- Draw inner cell
-			surface.SetDrawColor(0, 0, 255)
-			surface.DrawOutlinedRect(icellx1, icelly1, icellx2-icellx1, icelly2-icelly1)
-
-			-- Draw cell
-			surface.SetDrawColor(255, 0, 0)
-			surface.DrawOutlinedRect(cellx, celly, cellw, cellh)
-
-			x = x + colSize
-		end
-
-		y = y + rowSize
-	end
-
-	-- Draw logical table
-	surface.SetDrawColor(255, 127, 0)
-	surface.DrawOutlinedRect(xStart, yStart, logicalWidth, logicalHeight)
+		-- Draw cell
+		surface.SetDrawColor(255, 0, 0)
+		surface.DrawOutlinedRect(data.cellx, data.celly, data.cellw, data.cellh)
+	end, function(data)
+		surface.SetDrawColor(255, 127, 0)
+		surface.DrawOutlinedRect(data.xStart, data.yStart, data.logicalWidth, data.logicalHeight)
+	end)
 end
 
 nsgui.Register("NSTable", PANEL, "Panel")
 
-concommand.Add("nsgui.TestTable", function()
+concommand.Add("nsgui.TestTable", function(ply, cmd, args)
 	local comp = nsgui.TestComp("NSTable")
 
 	local function Label(txt)
