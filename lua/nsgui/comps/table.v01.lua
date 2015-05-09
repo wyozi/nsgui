@@ -134,6 +134,10 @@ nsgui.Accessor(PANEL, "_debugMode", "DebugMode", FORCE_BOOL)
 function PANEL:Init()
 	self:SetMouseInputEnabled(false)
 
+	-- Internal cell is used for doing stuff with the logical table
+	-- It should not be accessed directly, but through exposed methods
+	self._internalCell = Cell(self)
+
 	-- Grid[RowIndex][ColumnIndex] = Cell
 	self._grid = {}
 
@@ -141,6 +145,22 @@ function PANEL:Init()
 	self._cols = {}
 
 	self:Row() -- Start first row
+end
+
+function PANEL:Top()
+	self._internalCell:Top() return self
+end
+function PANEL:Bottom()
+	self._internalCell:Bottom() return self
+end
+function PANEL:Right()
+	self._internalCell:Right() return self
+end
+function PANEL:Left()
+	self._internalCell:Left() return self
+end
+function PANEL:Center()
+	self._internalCell:Center() return self
 end
 
 function PANEL:GetRow(i)
@@ -289,13 +309,24 @@ function PANEL:ComputeLogicalSize()
 	return logicalWidth, logicalHeight
 end
 
+function PANEL:ComputeLogicalXY()
+	local w, h = self:GetWide(), self:GetTall()
+	local logicalWidth, logicalHeight = self:ComputeLogicalSize()
+
+	local logicalAlignX, logicalAlignY = self._internalCell:GetAlignmentFractions()
+	local logicalMidX, logicalMidY = Lerp(logicalAlignX, 0, w), Lerp(logicalAlignY, 0, h)
+	local xStart, yStart = math.Clamp(logicalMidX-logicalWidth/2, 0, w-logicalWidth),
+						   math.Clamp(logicalMidY-logicalHeight/2, 0, h-logicalHeight)
+
+	return xStart, yStart
+end
+
 function PANEL:PerformLayout()
 	self:ComputeSizes()
 
 	local w, h = self:GetWide(), self:GetTall()
-
 	local logicalWidth, logicalHeight = self:ComputeLogicalSize()
-	local xStart, yStart = w/2 - logicalWidth/2, h/2 - logicalHeight/2
+	local xStart, yStart = self:ComputeLogicalXY()
 
 	local y = 0
 	for r=1, self:RowCount() do
@@ -350,7 +381,7 @@ function PANEL:PaintOver()
 	local w, h = self:GetWide(), self:GetTall()
 
 	local logicalWidth, logicalHeight = self:ComputeLogicalSize()
-	local xStart, yStart = w/2 - logicalWidth/2, h/2 - logicalHeight/2
+	local xStart, yStart = self:ComputeLogicalXY()
 
 	local y = 0
 	for r=1, self:RowCount() do
@@ -396,7 +427,6 @@ function PANEL:PaintOver()
 	-- Draw logical table
 	surface.SetDrawColor(255, 127, 0)
 	surface.DrawOutlinedRect(xStart, yStart, logicalWidth, logicalHeight)
-
 end
 
 nsgui.Register("NSTable", PANEL, "Panel")
@@ -412,12 +442,14 @@ concommand.Add("nsgui.TestTable", function()
 		return l
 	end
 
-	comp:Add(Label("Hello")):SetExpandedX(true):Right():Bottom()
+	comp:Bottom():Right()
+
+	comp:Add(Label("Hello")):Right():Bottom()
 	comp:Add(Label("World")):SetPadding(5):Left()
 	comp:Row()
 
 	comp:Add(Label("What's")):Fill():SetPadding(10)
-	comp:Add(Label(string.rep("swag", 3))):SetPadding(5):SetExpandedY(true):Top()
+	comp:Add(Label(string.rep("swag", 3))):SetPadding(5):Top()
 
 	comp:SetDebugMode(true)
 end)
