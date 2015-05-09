@@ -262,12 +262,13 @@ function PANEL:PerformLayout()
 			local comp = cell:GetComponent()
 
 			local cellx, celly, cellw, cellh = xStart + x, yStart + y, colSize, rowSize
+			local icellx, icelly = cellx + (cell:GetPaddingLeft() or 0), celly + (cell:GetPaddingTop() or 0)
 
 			if cell:GetFilledX() then
-				comp:SetWide(cellw)
+				comp:SetWide(cellw - (cell:GetPaddingLeft() or 0) - (cell:GetPaddingRight() or 0))
 			end
 			if cell:GetFilledY() then
-				comp:SetTall(cellh)
+				comp:SetTall(cellh - (cell:GetPaddingTop() or 0) - (cell:GetPaddingBottom() or 0))
 			end
 
 			local compw, comph = comp:GetWide(), comp:GetTall()
@@ -342,8 +343,8 @@ concommand.Add("nsgui.TestTable", function()
 	comp:Add(Label("World"))
 	comp:Row()
 
-	comp:Add(Label("What's")):Fill()
-	comp:Add(Label(string.rep("swag", 3))):SetPadding(10):SetExpandedY(true)
+	comp:Add(Label("What's")):Fill():SetPadding(10)
+	comp:Add(Label(string.rep("swag", 3))):SetExpandedY(true)
 
 	comp:SetDebugMode(true)
 end)
