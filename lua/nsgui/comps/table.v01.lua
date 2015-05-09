@@ -60,6 +60,7 @@ nsgui.Accessor(Cell, "_paddingL", "PaddingLeft")
 nsgui.Accessor(Cell, "_paddingT", "PaddingTop")
 nsgui.Accessor(Cell, "_paddingR", "PaddingRight")
 nsgui.Accessor(Cell, "_paddingB", "PaddingBottom")
+nsgui.Accessor(Cell, "_colspan", "Colspan")
 function Cell:initialize(comp)
 	self.comp = comp
 	self:Center()
@@ -169,6 +170,21 @@ end
 function PANEL:GetCol(i)
 	return self._cols[i]
 end
+function PANEL:GetColspannedColI(i, row)
+	local rowCols = self._grid[row]
+
+	local cursor = 0
+	for k, rowcol in ipairs(rowCols) do
+		cursor = cursor + (rowcol:GetColspan() or 1)
+
+		-- Note, if colspan is eg. 10, the cursor can easily jump over i
+		-- That's why we need a GTEQ check here instead of EQ
+		if cursor >= i then return k end
+	end
+end
+function PANEL:GetColspannedCol(i, row)
+	return self._cols[self:GetColspannedColI(i, row)]
+end
 
 function PANEL:Row()
 	local rowId = #self._rows + 1
@@ -230,23 +246,38 @@ function PANEL:ComputeSizes()
 	end
 
 	for r=1, self:RowCount() do
-		local row = self._rows[r]
+		local row = self:GetRow(r)
 		row:Reset()
 
-		for c=1, self:ColCount() do
-			local col = self._cols[c]
+		local rowcols = self._grid[r]
 
-			local cell = self._grid[r][c]
-			if cell:GetExpandedX() then
-				col:SetExpanded(true)
-			end
+		local spannedc = 1
+		for c=1, #rowcols do
+			local cell = rowcols[c]
+			local colspan = cell:GetColspan() or 1
+
 			if cell:GetExpandedY() then
 				row:SetExpanded(true)
 			end
 
 			local cw, ch = cell:GetPreferredCellSize()
-			col:SetSize(math.max(col:GetSize(), cw))
+
 			row:SetSize(math.max(row:GetSize(), ch))
+
+			-- Divide space evenly for each colspanned col
+			cw = cw / colspan
+
+			-- Set size/expand status for each col independently
+			for cs=0, colspan-1 do
+				local col = self:GetCol(spannedc + cs)
+
+				if cell:GetExpandedX() then
+					col:SetExpanded(true)
+				end
+				col:SetSize(math.max(col:GetSize(), cw))
+			end
+
+			spannedc = spannedc + colspan
 		end
 	end
 
@@ -321,6 +352,7 @@ function PANEL:ComputeLogicalXY()
 	return xStart, yStart
 end
 
+-- Note: colspanned cells are visited once no matter how large the colspan is
 function PANEL:ForEachCell(eachCell, after)
 	local param = {} -- save some memory
 
@@ -344,18 +376,34 @@ function PANEL:ForEachCell(eachCell, after)
 		param.rowSize = rowSize
 		param.y = y
 
+		local rowcols = self._grid[r]
+
 		local x = 0
 
-		for c=1, self:ColCount() do
+		-- c is the col index in CURRENT row only
+		-- spannedc is c that accounts for colspans and can be used for global columns
+		local spannedc = 1
+		for c=1, #rowcols do
 			param.x = x
-
-			local col = self._cols[c]
-			local colSize = col:GetSize()
-			param.col, param.colSize = col, colSize
 
 			local cell = self._grid[r][c]
 			local comp = cell:GetComponent()
 			param.cell, param.comp = cell, comp
+
+			local colspan = (cell:GetColspan() or 1)
+			param.colspan = colspan
+
+			local colSize = 0
+			local cellCol = 0
+			while cellCol < colspan do
+				local col = self:GetCol(spannedc + cellCol)
+				colSize = colSize + col:GetSize()
+
+				cellCol = cellCol + 1
+			end
+			spannedc = spannedc + cellCol
+
+			param.colSize = colSize
 
 			-- The absolute cell corner values
 			local cellx, celly, cellw, cellh = xStart + x, yStart + y, colSize, rowSize
@@ -446,14 +494,35 @@ concommand.Add("nsgui.TestTable", function(ply, cmd, args)
 		return l
 	end
 
-	comp:Bottom():Right()
+	local testidx = args[1]
 
-	comp:Add(Label("Hello")):Right():Bottom()
-	comp:Add(Label("World")):SetPadding(5):Left()
-	comp:Row()
+	if testidx == "colspan" then
+		comp:Add(Label("Row1Col1"))
+		comp:Add(Label("Row1Col2"))
+		comp:Add(Label("Row1Col3"))
+		comp:Add(Label("Row1Col4"))
+		comp:Row()
 
-	comp:Add(Label("What's")):Fill():SetPadding(10)
-	comp:Add(Label(string.rep("swag", 3))):SetPadding(5):Top()
+		comp:Add(Label("Row2Col1"))
+		comp:Add(Label("Row2Col2Span2")):SetColspan(2):Expand()
+		comp:Add(Label("Row2Col4"))
+		comp:Row()
+
+		comp:Add(Label("Row3Col1"))
+		comp:Add(Label("Row3Col2"))
+		comp:Add(Label("Row3Col3"))
+		comp:Add(Label("Row3Col4"))
+	else
+		comp:Right()
+
+		comp:Add(Label("Hello")):Right():Bottom():SetPaddingBottom(15):SetPaddingRight(100)
+		comp:Add(Label("World")):SetPadding(5):Left()
+		comp:Row()
+
+		comp:Add(Label("What's")):Fill()
+		comp:Add(Label(string.rep("swag", 3))):SetPadding(5):SetPaddingTop(2):Top()
+	end
 
 	comp:SetDebugMode(true)
+	--timer.Simple(0.05, function() comp:Remove() end)
 end)
