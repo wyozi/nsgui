@@ -54,6 +54,7 @@ function PANEL:Think()
 		if code then
 			if code ~= KEY_ESCAPE then
 				self:SetBinding(code)
+				self:CallHook("BindingChanged", code)
 			end
 			
 			self:SetEditing(false)
