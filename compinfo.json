@@ -6,9 +6,9 @@
 				"default": true,
 				"files": ["frame.v01", "label.v01", "button.v01", "textarea.v01", "textentry.v01"]
 			},
-			"tree": {
-				"name": "Tree component",
-				"files": []
+			"table": {
+				"name": "TableLayout component",
+				"files": ["table.v01.lua"]
 			},
 			"binder": {
 				"name": "Binder component",
