@@ -9,6 +9,10 @@
 			"tree": {
 				"name": "Tree component",
 				"files": []
+			},
+			"binder": {
+				"name": "Binder component",
+				"files": ["binder.v01.lua"]
 			}
 		}
 	},

@@ -8,6 +8,16 @@ surface.CreateFont("Roboto 16", {
 SKIN.FrameHeaderFont = "Roboto 16"
 SKIN.Font = "Roboto 16"
 
+SKIN.Color_GenericBackground = Color(236, 236, 236)
+SKIN.Color_GenericOutline = Color(0, 0, 0, 100)
+function SKIN:PaintGenericBackground(panel, w, h)
+	surface.SetDrawColor(self.Color_GenericBackground)
+	surface.DrawRect(0, 0, w, h)
+
+	surface.SetDrawColor(self.Color_GenericOutline)
+	surface.DrawOutlinedRect(0, 0, w, h)
+end
+
 SKIN.Color_FrameBackground = Color(255, 255, 255)
 SKIN.Color_FrameOutline = Color(0, 0, 0, 100)
 SKIN.Color_FrameHeaderBackground = Color(32, 32, 32)

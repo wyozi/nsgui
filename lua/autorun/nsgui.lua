@@ -85,6 +85,10 @@ function nsgui.Example(skin)
 		comp:SetText("Lorem\nIpsum")
 	end)
 
+	createComp("NSBinder", 30, function(comp)
+		comp:SetBinding(bit.bor(nsgui.keymod.CTRL, KEY_LEFT))
+	end)
+
 	fr:MakePopup()
 end
 
