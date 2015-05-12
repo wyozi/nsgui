@@ -8,11 +8,11 @@
 			},
 			"table": {
 				"name": "TableLayout component",
-				"files": ["table.v01.lua"]
+				"files": ["table.v01"]
 			},
 			"binder": {
 				"name": "Binder component",
-				"files": ["binder.v01.lua"]
+				"files": ["binder.v01"]
 			}
 		}
 	},
