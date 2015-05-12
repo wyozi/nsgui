@@ -15,6 +15,12 @@ function PANEL:Right() self:SetContentAlignment(6) end
 function PANEL:Top() self:SetContentAlignment(8) end
 function PANEL:Bottom() self:SetContentAlignment(2) end
 
+function PANEL:SizeToContents()
+	-- TODO HARD CODED AAAAAAAAAAAAAAA
+	surface.SetFont(self:GetFont() or "Roboto 16")
+	self:SetSize(surface.GetTextSize(self:GetText()))
+end
+
 nsgui.skin.HookPaint(PANEL, "PaintLabel")
 
 nsgui.Register("NSLabel", PANEL, "Panel")
