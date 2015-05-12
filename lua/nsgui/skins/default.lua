@@ -53,6 +53,50 @@ function SKIN:PaintFrame(panel, w, h)
 	end
 end
 
+SKIN.Color_LabelForeground = Color(51, 51, 51)
+
+function SKIN:GetAlignedLabelPos(panel, tw, th, w, h)
+	local alignment = panel:GetContentAlignment()
+
+	local midx, midy = w/2 - tw/2, h/2 - th/2
+	local left, top = 0, 0
+	local right, bot = w - tw, h - th
+
+	if alignment == 7 then -- NW
+		return left, top
+	elseif alignment == 8 then -- N
+		return midx, top
+	elseif alignment == 9 then -- NE
+		return right, top
+	elseif alignment == 4 then -- W
+		return left, midy
+	elseif alignment == 5 then -- CENTER
+		return midx, midy
+	elseif alignment == 6 then -- E
+		return right, midy
+	elseif alignment == 1 then -- SW
+		return left, bot
+	elseif alignment == 2 then -- S
+		return midx, bot
+	elseif alignment == 3 then -- SE
+		return right, bot
+	end
+
+	-- Invalid alignment. TODO should we error here?
+	return midx, midy
+end
+
+function SKIN:PaintLabel(panel, w, h)
+	local fgclr = panel:GetTextColor() or self.Color_LabelForeground
+	local font = panel:GetFont() or self.Font
+
+	surface.SetFont(font)
+	local tw, th = surface.GetTextSize(panel:GetText())
+	local x, y = self:GetAlignedLabelPos(panel, tw, th, w, h)
+
+	draw.SimpleText(panel:GetText(), font, x, y, fgclr)
+end
+
 SKIN.Color_ButtonBackground = Color(236, 236, 236)
 SKIN.Color_ButtonBackgroundDisabled = Color(236, 236, 236)
 SKIN.Color_ButtonOutline = Color(0, 0, 0, 100)

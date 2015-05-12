@@ -4,7 +4,7 @@
 			"base": {
 				"name": "Basic components",
 				"default": true,
-				"files": ["frame.v01", "button.v01", "textarea.v01", "textentry.v01"]
+				"files": ["frame.v01", "label.v01", "button.v01", "textarea.v01", "textentry.v01"]
 			},
 			"tree": {
 				"name": "Tree component",

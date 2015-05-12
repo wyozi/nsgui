@@ -52,32 +52,36 @@ function nsgui.Example(skin)
 
 	tbl:Top():SetPadding(15)
 
-	local function createComp(cls, x, y, w, h, fn)
+	local function createComp(cls, h, fn)
 		local cell = tbl:Add(vgui.Create(cls)):SetExpandedX(true):Fill():SetHeight(h)
 		fn(cell:GetComponent())
 
-		if cell:GetComponent().SetEnabled then
+		if cell:GetComponent().IsEnabled then
 			local disabledcell = tbl:Add(vgui.Create(cls)):SetExpandedX(true):Fill():SetHeight(h)
 			disabledcell:GetComponent():SetEnabled(false)
 			fn(disabledcell:GetComponent())
 		else
 			-- Add null cell
-			tbl:Add(vgui.Create("DPanel"))
+			tbl:Add()
 		end
 
 		tbl:Row():SetMarginTop(10)
 	end
 
-	createComp("NSButton", 10, 40, 250, 30, function(comp)
+	createComp("NSLabel", 25, function(comp)
+		comp:SetText("I am a label!")
+	end)
+
+	createComp("NSButton", 30, function(comp)
 		comp:SetText("Click me!")
 		comp.DoClick = function() chat.AddText("Clicked!") end
 	end)
 
-	createComp("NSTextEntry", 10, 80, 250, 30, function(comp)
+	createComp("NSTextEntry", 30, function(comp)
 		comp:SetText("Hello world")
 	end)
 
-	createComp("NSTextArea", 10, 120, 250, 90, function(comp)
+	createComp("NSTextArea", 90, function(comp)
 		comp:SetText("Lorem\nIpsum")
 	end)
 
