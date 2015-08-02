@@ -28,7 +28,13 @@ function nsgui.trait.Register(id, tbl)
 	return tbl
 end
 
+--- These keys won't be imported
+local importBlackList = {"Init", "Default", "Dependencies"}
 function nsgui.trait.Import(metapanel, trait)
+	if metapanel._ImportedTraits and table.HasValue(metapanel._ImportedTraits, trait) then
+		return -- already imported
+	end
+
 	local traitobj = nsgui.trait.Traits[trait]
 
 	-- TODO should we report this in any way?
@@ -39,32 +45,23 @@ function nsgui.trait.Import(metapanel, trait)
 
 	local objtbl = {}
 
-	for k, func in pairs(traitobj) do
-		if isfunction(func) then
-			if metapanel [ k ] then
-				objtbl [ "_" .. k ] = func
-
-				local oldf = metapanel [ k ]
-				metapanel [ k ] = function(...)
-					oldf(...)
-					objtbl [ "_" .. k ](...)
-				end
-			else
-				objtbl [ k ] = func
-			end
-		else
-			objtbl [ k ] = func
+	-- Import dependencies if they're not imported yet. TODO circular dependencies?
+	for k, v in pairs(traitobj.Dependencies or {}) do
+		if not table.HasValue(metapanel._ImportedTraits, v) then
+			nsgui.trait.Import(metapanel, v)
 		end
 	end
 
-	if objtbl.Dependencies then
-		for k, v in pairs(objtbl.Dependencies) do
-			if(not table.HasValue(metapanel._ImportedTraits, v)) then
-				error("The trait '" .. trait .. "' requires the trait '".. v .. "'' to function properly.", 2)
+	-- Add non-blacklisted keys from trait to metapanel
+	for k,v in pairs(traitobj) do
+		if not table.HasValue(importBlackList, k) then
+			if metapanel[k] ~= nil then
+				error("Attempted to import '" .. trait .. "' to '" .. (metapanel.Name or "unknown") .. "', which failed because key '" .. k .. "' exists already")
 			end
+			objtbl[k] = v
 		end
 	end
-	
+
 	table.Merge(metapanel, objtbl)
 end
 
@@ -78,4 +75,17 @@ function nsgui.Register(name, panel, inherit)
 	end
 
 	vgui.Register(name, panel, inherit)
+
+	-- Detour panel:Init() to call trait:InitTrait() on each imported trait
+	local oldInit = panel.Init
+	function panel:Init()
+		if oldInit then oldInit(self) end
+
+		for _,itrait in pairs(self._ImportedTraits) do
+			local traitobj = nsgui.trait.Traits[itrait]
+			if traitobj.Init then
+				traitobj.Init(self)
+			end
+		end
+	end
 end

@@ -2,9 +2,15 @@ local TRAIT = {}
 
 TRAIT.Default = true
 
--- TODO is this actually a good idea?
-function TRAIT:Think()
-	self:CallHook("Think")
+function TRAIT:Init()
+	-- Create a delegate for a Think hook. This is a hack
+	-- TODO come up with something better?
+	local oldthink = self.Think
+	self.Think = function(self)
+		self:CallHook("Think")
+
+		if oldthink then oldthink(self) end
+	end
 end
 
 function TRAIT:AddHook(name, id, fn)
@@ -20,7 +26,7 @@ function TRAIT:CallHook(name, ...)
 	if not nmhooks then return end
 
 	for _,fn in pairs(nmhooks) do
-		fn(...)
+		fn(self, ...)
 	end
 end
 

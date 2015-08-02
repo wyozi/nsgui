@@ -7,7 +7,7 @@ nsgui.Accessor(TRAIT, "_canfullscreen", "CanFullScreen", FORCE_BOOL)
 function TRAIT:Init()
 	self:SetCanFullScreen(true)
 
-	self:AddHook("Think", "GestureThink", function() self:GestureThink() end)
+	self:AddHook("Think", "GestureThink", self.GestureThink)
 end
 
 function TRAIT:GestureThink()
@@ -19,7 +19,7 @@ function TRAIT:GestureThink()
 				pos = {self:GetPos()},
 				size = {self:GetSize()}
 			}
-			
+
 			local parent = self:GetParent()
 			local w, h
 			if IsValid(parent) then

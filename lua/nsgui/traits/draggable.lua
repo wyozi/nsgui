@@ -1,11 +1,15 @@
 local TRAIT = {}
 
+TRAIT.Dependencies = { "mouseinput" }
+
 nsgui.Accessor(TRAIT, "_draggable", "Draggable", FORCE_BOOL)
 
 function TRAIT:Init()
 	self:SetDragBounds(0, 0, self:GetWide(), self:GetTall())
 
-	self:AddHook("Think", "DragThink", function() self:DragThink() end)
+	self:AddHook("Think", "DragThink", self.DragThink)
+	self:AddHook("OnPress", "DragOnPress", self.DragOnPress)
+	self:AddHook("OnRelease", "DragOnRelease", self.DragOnRelease)
 end
 
 function TRAIT:SetDragBounds(x, y, w, h)
@@ -52,7 +56,7 @@ function TRAIT:ResetDragPosition()
 	self.Dragging = { self.x - gui.MouseX(), self.y - gui.MouseY() }
 end
 
-function TRAIT:OnMousePressed()
+function TRAIT:DragOnPress()
 	if(self:GetDraggable() && self:IsInBounds(gui.MouseX(), gui.MouseY())) then
 		self:ResetDragPosition()
 		self:MouseCapture(true)
@@ -61,7 +65,7 @@ function TRAIT:OnMousePressed()
 	end
 end
 
-function TRAIT:OnMouseReleased()
+function TRAIT:DragOnRelease()
 	if self:GetDraggable() then
 		self.Dragging = nil
 		self:MouseCapture(false)

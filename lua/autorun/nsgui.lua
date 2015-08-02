@@ -74,7 +74,7 @@ function nsgui.Example(skin)
 
 	createComp("NSButton", 30, function(comp)
 		comp:SetText("Click me!")
-		comp.DoClick = function() chat.AddText("Clicked!") end
+		comp:AddHook("OnRelease", "Action", function() chat.AddText("Clicked!") end)
 	end)
 
 	createComp("NSTextEntry", 30, function(comp)
@@ -90,6 +90,8 @@ function nsgui.Example(skin)
 	end)
 
 	fr:MakePopup()
+
+	NSGUIExampleFrame = fr
 end
 
 concommand.Add("nsgui.Example", function(ply, cmd, args)

@@ -9,7 +9,7 @@ AccessorFunc(PANEL, "_font", "Font")
 function PANEL:Init()
 	self:SetAllowNonAsciiCharacters(true)
 
-	self:AddHook("OnStateChanged", "DisableInput", function(b)
+	self:AddHook("OnStateChanged", "DisableInput", function(_, b)
 		self:SetKeyboardInputEnabled(b)
 		self:SetMouseInputEnabled(b)
 	end)

@@ -10,7 +10,7 @@ function PANEL:Init()
 	self:SetAllowNonAsciiCharacters(true)
 	self:SetMultiline(true)
 
-	self:AddHook("OnStateChanged", "DisableInput", function(b)
+	self:AddHook("OnStateChanged", "DisableInput", function(_, b)
 		self:SetKeyboardInputEnabled(b)
 		self:SetMouseInputEnabled(b)
 	end)

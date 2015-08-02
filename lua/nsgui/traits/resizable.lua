@@ -1,5 +1,7 @@
 local TRAIT = {}
 
+TRAIT.Dependencies = { "mouseinput" }
+
 nsgui.Accessor(TRAIT, "_sizable", "Sizable", FORCE_BOOL)
 nsgui.Accessor(TRAIT, "_minwidth", "MinWidth", FORCE_NUMBER, 50)
 nsgui.Accessor(TRAIT, "_minheight", "MinHeight", FORCE_NUMBER, 50)
@@ -7,7 +9,9 @@ nsgui.Accessor(TRAIT, "_maxwidth", "MaxWidth", FORCE_NUMBER)
 nsgui.Accessor(TRAIT, "_maxheight", "MaxHeight", FORCE_NUMBER)
 
 function TRAIT:Init()
-	self:AddHook("Think", "SizableThink", function() self:SizableThink() end)
+	self:AddHook("Think", "SizableThink", self.SizableThink)
+	self:AddHook("OnPress", "SizableOnPress", self.SizableOnPress)
+	self:AddHook("OnRelease", "SizableOnRelease", self.SizableOnRelease)
 end
 
 function TRAIT:HoveringSizableEHandle()
@@ -63,7 +67,7 @@ function TRAIT:SizableThink()
 	self:SetCursor("arrow")
 end
 
-function TRAIT:OnMousePressed()
+function TRAIT:SizableOnPress()
 	if self:IsSizable() then
 		local x, y
 
@@ -81,7 +85,7 @@ function TRAIT:OnMousePressed()
 	end
 end
 
-function TRAIT:OnMouseReleased()
+function TRAIT:SizableOnRelease()
 	if self.Sizing then
 		self.Sizing = nil
 		self:MouseCapture(false)
