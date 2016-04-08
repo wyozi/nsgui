@@ -6,7 +6,7 @@ nsgui.Accessor(PANEL, "_icon", "Icon")
 
 function PANEL:Init()
 	self.CloseButton = vgui.Create("NSButton", self)
-	self.CloseButton:SetText("x")
+	self.CloseButton:SetText("Exit")
 	self.CloseButton:SetTextColor(Color(255, 255, 255))
 
 	nsgui.skin.HookPaint(self.CloseButton, "PaintFrameCloseButton")
