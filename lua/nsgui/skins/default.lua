@@ -78,7 +78,7 @@ function SKIN:PaintFrameCloseButton(panel, w, h)
 	surface.SetFont "Roboto 16"
 	local textw, texth = surface.GetTextSize ( panel:GetText ( ) )
 
-	surface.SetTextPos ( w / 2 - textw / 2, h / 2 - texth / 2 - 2 )
+	surface.SetTextPos ( w / 2 - textw / 2, h / 2 - texth / 2 )
 	surface.DrawText ( panel:GetText ( ) )
 end
 
